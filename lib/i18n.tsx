@@ -201,6 +201,51 @@ const translations: Translations = {
     total_spend: { 'zh-TW': '總花費', 'en': 'Total Spend', 'ja': '総支出', 'ko': '총 지출' },
     total_revenue: { 'zh-TW': '總營收', 'en': 'Total Revenue', 'ja': '総収益', 'ko': '총 수익' },
     paid_vs_organic: { 'zh-TW': '付費 vs 自然流量', 'en': 'Paid vs Organic', 'ja': '有料 vs 自然', 'ko': '유료 vs 자연' },
+    // Pricing Tiers & Features
+    tier_lite: { 'zh-TW': '創業起步版', 'en': 'Lite', 'ja': 'ライト', 'ko': '라이트' },
+    tier_pro: { 'zh-TW': '專業成長版', 'en': 'Pro', 'ja': 'プロ', 'ko': '프로' },
+    tier_agency: { 'zh-TW': '企業尊榮版', 'en': 'Agency', 'ja': 'エージェンシー', 'ko': '에이전시' },
+    desc_lite: { 'zh-TW': '適合剛起步的個人創業者。', 'en': 'For Solopreneurs starting out.', 'ja': '起業したての個人事業主向け。', 'ko': '이제 막 시작하는 1인 기업가를 위한 요금제입니다.' },
+    desc_pro: { 'zh-TW': '適合正在擴張的成長型品牌。', 'en': 'For Growing Brands scaling up.', 'ja': '拡大中の成長ブランド向け。', 'ko': '규모를 확장하는 성장형 브랜드를 위한 요금제입니다.' },
+    desc_agency: { 'zh-TW': '適合行銷團隊與代理商。', 'en': 'For Marketing Teams & Agencies.', 'ja': 'マーケティングチーム＆代理店向け。', 'ko': '마케팅 팀 및 에이전시를 위한 요금제입니다.' },
+    most_popular: { 'zh-TW': '最受歡迎', 'en': 'Most Popular', 'ja': '一番人気', 'ko': '가장 인기' },
+    upgrade_experience: { 'zh-TW': '升級您的體驗', 'en': 'Upgrade your Experience', 'ja': '体験をアップグレード', 'ko': '경험 업그레이드' },
+    upgrade_desc: { 'zh-TW': '解鎖 Lumina AdOS 的全部潛力。利用 AI 驅動的洞察力擴展您的行銷業務。', 'en': 'Unlock the full potential of Lumina AdOS. Scale your marketing with AI-driven insights.', 'ja': 'Lumina AdOSの可能性を最大限に引き出します。AI主導の洞察でマーケティングを拡大しましょう。', 'ko': 'Lumina AdOS의 모든 잠재력을 잠금 해제하세요. AI 기반 인사이트로 마케팅을 확장하세요.' },
+
+    // Audience Persona
+    high_value_persona: { 'zh-TW': '高價值客群：科技新貴型', 'en': 'High Value: Tech Savvy', 'ja': '高価値: テック愛好家', 'ko': '고가치: 테크 새비' },
+    traits_label: { 'zh-TW': '特徵', 'en': 'Traits', 'ja': '特徴', 'ko': '특징' },
+    traits_desc: { 'zh-TW': '年齡 28-45，興趣：投資、SaaS、效率工具', 'en': 'Age 28-45, Interests: Investing, SaaS, Productivity', 'ja': '年齢 28-45、興味: 投資、SaaS、生産性ツール', 'ko': '나이 28-45, 관심사: 투자, SaaS, 생산성 도구' },
+    pain_points_label: { 'zh-TW': '痛點', 'en': 'Pain Points', 'ja': '悩み', 'ko': '페인 포인트' },
+    pain_points_desc: { 'zh-TW': '沒時間研究數據，喜歡一鍵生成的報表', 'en': 'No time for data, likes 1-click reports', 'ja': 'データ分析の時間がない、ワンクリックレポートを好む', 'ko': '데이터 분석할 시간이 없음, 원클릭 보고서 선호' },
+    target_persona: { 'zh-TW': '鎖定此客群', 'en': 'Target This Persona', 'ja': 'このペルソナをターゲット', 'ko': '이 페르소나 타겟팅' },
+    target_success: { 'zh-TW': '成功鎖定目標客群！', 'en': 'Persona Targeted Successfully!', 'ja': 'ペルソナのターゲット設定に成功しました！', 'ko': '페르소나 타겟팅 성공!' },
+
+    // Settings Guide & Interacts
+    save_changes: { 'zh-TW': '儲存變更', 'en': 'Save Changes', 'ja': '変更を保存', 'ko': '변경 사항 저장' },
+    saved_success: { 'zh-TW': '設定已儲存！', 'en': 'Settings Saved!', 'ja': '設定を保存しました！', 'ko': '설정이 저장되었습니다!' },
+    how_to_find: { 'zh-TW': '如何取得？', 'en': 'How to find?', 'ja': '取得方法は？', 'ko': '찾는 방법?' },
+    guide_meta_1: { 'zh-TW': '1. 前往 Meta Events Manager (事件管理工具)', 'en': '1. Go to Meta Events Manager', 'ja': '1. Metaイベントマネージャへ移動', 'ko': '1. Meta 이벤트 관리자로 이동' },
+    guide_meta_2: { 'zh-TW': '2. 點擊左側『資料來源』', 'en': '2. Click "Data Sources" on left', 'ja': '2. 左側の「データソース」をクリック', 'ko': '2. 왼쪽의 "데이터 소스" 클릭' },
+    guide_meta_3: { 'zh-TW': '3. 複製以 ID 開頭的數字串', 'en': '3. Copy ID string', 'ja': '3. IDで始まる文字列をコピー', 'ko': '3. ID로 시작하는 문자열 복사' },
+    guide_ga4_1: { 'zh-TW': '1. 前往 GA4 『管理』介面', 'en': '1. Go to GA4 Admin', 'ja': '1. GA4管理画面へ移動', 'ko': '1. GA4 관리자 화면으로 이동' },
+    guide_ga4_2: { 'zh-TW': '2. 點擊『資料串流』', 'en': '2. Click "Data Streams"', 'ja': '2. 「データストリーム」をクリック', 'ko': '2. "데이터 스트림" 클릭' },
+    guide_ga4_3: { 'zh-TW': '3. 複製『評估 ID (G-XXXXXX)』', 'en': '3. Copy Measurement ID', 'ja': '3. 「測定ID」をコピー', 'ko': '3. "측정 ID" 복사' },
+    validating: { 'zh-TW': '驗證中...', 'en': 'Validating...', 'ja': '検証中...', 'ko': '확인 중...' },
+    connection_success: { 'zh-TW': '連線成功', 'en': 'Connected Successfully', 'ja': '接続成功', 'ko': '연결 성공' },
+
+    // Budget Allocator Interact
+    applying: { 'zh-TW': '套用中...', 'en': 'Applying...', 'ja': '適用中...', 'ko': '적용 중...' },
+    budget_applied: { 'zh-TW': '預算模型已套用！預估營收增長 15%', 'en': 'Budget Model Applied! Projected +15% Revenue', 'ja': '予算モデル適用完了！予想収益 +15%', 'ko': '예산 모델 적용 완료! 예상 수익 +15%' },
+
+    // Pricing Features
+    basic_reporting: { 'zh-TW': '基礎報表', 'en': 'Basic Reporting', 'ja': '基本レポート', 'ko': '기본 보고서' },
+    data_retention: { 'zh-TW': '資料保留', 'en': 'Data Retention', 'ja': 'データ保持', 'ko': '데이터 보존' },
+    email_support: { 'zh-TW': 'Email 支援', 'en': 'Email Support', 'ja': 'メールサポート', 'ko': '이메일 지원' },
+    priority_support: { 'zh-TW': '優先 Email 支援', 'en': 'Priority Email Support', 'ja': '優先メールサポート', 'ko': '우선 이메일 지원' },
+    best_value: { 'zh-TW': '超值首選', 'en': 'Best Value', 'ja': 'ベストバリュー', 'ko': '가장 인기' },
+    unlimited_accounts: { 'zh-TW': '無限帳戶數', 'en': 'Unlimited Accounts', 'ja': '無制限アカウント', 'ko': '무제한 계정' },
+    dedicated_manager: { 'zh-TW': '專屬客戶經理', 'en': 'Dedicated Account Manager', 'ja': '専属アカウントマネージャー', 'ko': '전담 계정 관리자' },
 };
 
 interface LanguageContextType {

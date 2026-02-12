@@ -6,57 +6,60 @@ import { Check, X, Zap, Crown, ShieldCheck, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { GlassCard } from '@/components/ui/glass-card';
 
-const pricingTiers = [
-    {
-        name: "Lite",
-        price: 490,
-        description: "For Solopreneurs starting out.",
-        features: ["2 Platform Integrations", "Basic Reporting", "7-Day Data Retention", "Email Support"],
-        notIncluded: ["AI Budget Calculator", "PDF Export", "White-label Reports"],
-        visual: "border-white/10 hover:border-white/30",
-        buttonStyle: "bg-white/10 hover:bg-white/20",
-        icon: Zap,
-    },
-    {
-        name: "Pro",
-        price: 1290,
-        description: "For Growing Brands scaling up.",
-        features: [
-            "All Platforms (GA4, Meta, TT)",
-            "AI Budget Calculator",
-            "PDF Export",
-            "30-Day Data Retention",
-            "Priority Email Support"
-        ],
-        notIncluded: ["White-label Reports", "Dedicated Account Manager"],
-        visual: "border-cyan-500/50 shadow-cyan-500/20 scale-105 z-10",
-        badge: "Best Value",
-        buttonStyle: "bg-gradient-to-r from-cyan-500 to-blue-500 hover:opacity-90 animate-pulse-slow shadow-lg shadow-cyan-500/30",
-        icon: Crown,
-    },
-    {
-        name: "Agency",
-        price: 3990,
-        description: "For Marketing Teams & Agencies.",
-        features: [
-            "Unlimited Accounts",
-            "White-label Reports (No Watermark)",
-            "Dedicated Account Manager",
-            "Unlimited Data Retention",
-            "24/7 Phone Support",
-            "Custom API Access"
-        ],
-        notIncluded: [],
-        visual: "border-yellow-500/30 bg-yellow-900/10 hover:border-yellow-500/50",
-        buttonStyle: "bg-gradient-to-r from-yellow-500 to-orange-500 hover:opacity-90 text-black font-bold",
-        icon: ShieldCheck,
-    }
-];
+import { useTranslation } from '@/lib/i18n';
 
 export const PricingSection = () => {
+    const { t } = useTranslation();
     const [isYearly, setIsYearly] = useState(false);
     const [loadingTier, setLoadingTier] = useState<string | null>(null);
     const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
+
+    const pricingTiers = [
+        {
+            name: t('tier_lite'),
+            price: 490,
+            description: t('desc_lite'),
+            features: ["2 " + t('platform'), t('basic_reporting') || "Basic Reporting", "7-Day " + t('data_retention') || "Data Retention", t('email_support') || "Email Support"],
+            notIncluded: [t('budget_allocator'), "PDF Export", "White-label Reports"],
+            visual: "border-white/10 hover:border-white/30",
+            buttonStyle: "bg-white/10 hover:bg-white/20",
+            icon: Zap,
+        },
+        {
+            name: t('tier_pro'),
+            price: 1290,
+            description: t('desc_pro'),
+            features: [
+                t('all_platforms'),
+                t('budget_allocator'),
+                "PDF Export",
+                "30-Day " + (t('data_retention') || "Data Retention"),
+                t('priority_support') || "Priority Support"
+            ],
+            notIncluded: ["White-label Reports", "Dedicated Account Manager"],
+            visual: "border-cyan-500/50 shadow-cyan-500/20 scale-105 z-10",
+            badge: t('best_value') || "Best Value",
+            buttonStyle: "bg-gradient-to-r from-cyan-500 to-blue-500 hover:opacity-90 animate-pulse-slow shadow-lg shadow-cyan-500/30",
+            icon: Crown,
+        },
+        {
+            name: t('tier_agency'),
+            price: 3990,
+            description: t('desc_agency'),
+            features: [
+                t('unlimited_accounts') || "Unlimited Accounts",
+                "White-label Reports",
+                t('dedicated_manager') || "Dedicated Mgr",
+                "Unlimited Data",
+                "24/7 Support",
+                "Custom API"
+            ],
+            notIncluded: [],
+            visual: "border-yellow-500/30 bg-yellow-900/10 hover:border-yellow-500/50",
+            buttonStyle: "bg-gradient-to-r from-yellow-500 to-orange-500 hover:opacity-90 text-black font-bold",
+            icon: ShieldCheck,
+        }
+    ];
 
     const handleSubscribe = (tierName: string) => {
         setLoadingTier(tierName);
@@ -64,7 +67,7 @@ export const PricingSection = () => {
         // Simulate API call
         setTimeout(() => {
             setLoadingTier(null);
-            setToast({ message: `Successfully subscribed to ${tierName} plan!`, type: 'success' });
+            setToast({ message: t('subscribed_success'), type: 'success' });
 
             // Auto-dismiss toast
             setTimeout(() => setToast(null), 3000);
@@ -91,16 +94,16 @@ export const PricingSection = () => {
 
             <div className="text-center mb-16">
                 <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-white mb-4">
-                    Upgrade your Experience
+                    {t('upgrade_experience')}
                 </h2>
                 <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-8">
-                    Unlock the full potential of Lumina AdOS with our premium tiers. Scale your marketing with AI-driven insights.
+                    {t('upgrade_desc')}
                 </p>
 
                 {/* Toggle Switch */}
                 <div className="flex items-center justify-center gap-4">
                     <span className={cn("text-sm font-medium transition-colors", !isYearly ? "text-white" : "text-gray-500")}>
-                        Monthly
+                        {t('monthly')}
                     </span>
                     <button
                         onClick={() => setIsYearly(!isYearly)}
@@ -113,10 +116,10 @@ export const PricingSection = () => {
                         />
                     </button>
                     <span className={cn("text-sm font-medium transition-colors", isYearly ? "text-white" : "text-gray-500")}>
-                        Yearly
+                        {t('yearly')}
                     </span>
                     <span className="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded-full border border-green-500/30">
-                        Save 20%
+                        {t('save_20')}
                     </span>
                 </div>
             </div>
@@ -124,7 +127,7 @@ export const PricingSection = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
                 {pricingTiers.map((tier) => {
                     const displayedPrice = isYearly ? Math.round(tier.price * 12 * 0.8) : tier.price;
-                    const isPro = tier.name === "Pro";
+                    const isPro = tier.name === t('tier_pro');
 
                     return (
                         <GlassCard
@@ -136,7 +139,7 @@ export const PricingSection = () => {
                         >
                             {isPro && (
                                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg shadow-cyan-500/40">
-                                    MOST POPULAR
+                                    {t('most_popular')}
                                 </div>
                             )}
 
@@ -196,10 +199,10 @@ export const PricingSection = () => {
                                 {loadingTier === tier.name ? (
                                     <>
                                         <Loader2 className="w-5 h-5 animate-spin" />
-                                        Processing...
+                                        {t('processing')}
                                     </>
                                 ) : (
-                                    "Subscribe Now"
+                                    t('subscribe')
                                 )}
                             </button>
                         </GlassCard>

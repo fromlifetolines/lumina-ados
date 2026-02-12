@@ -4,6 +4,7 @@ import { GlassCard } from '@/components/ui/glass-card';
 import { useTranslation } from '@/lib/i18n';
 import { Header } from '@/components/dashboard/Header';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { User, Zap } from 'lucide-react';
 
 const genderData = [
     { name: 'Male', value: 45 },
@@ -108,9 +109,56 @@ export default function AudiencePage() {
                     <div className="absolute top-[35%] left-[80%] w-3 h-3 rounded-full bg-purple-500 animate-ping delay-700"></div> {/* Tokyo-ish */}
                 </GlassCard>
 
+                {/* Persona Card - High Value Audience */}
+                <GlassCard className="col-span-3 border-none bg-gradient-to-r from-blue-900/40 to-purple-900/40 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-8 opacity-20">
+                        <User className="w-48 h-48 text-white" />
+                    </div>
+
+                    <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center">
+                        <div className="relative">
+                            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                                <span className="text-3xl font-bold text-white">VP</span>
+                            </div>
+                            <div className="absolute -bottom-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full border border-white/20">
+                                TOP 1%
+                            </div>
+                        </div>
+
+                        <div className="flex-1 text-center md:text-left space-y-2">
+                            <h3 className="text-2xl font-bold text-white">{t('high_value_persona')}</h3>
+                            <div className="space-y-1">
+                                <p className="text-gray-300 text-sm">
+                                    <span className="font-bold text-blue-300">{t('traits_label')}:</span> {t('traits_desc')}
+                                </p>
+                                <p className="text-gray-300 text-sm">
+                                    <span className="font-bold text-red-300">{t('pain_points_label')}:</span> {t('pain_points_desc')}
+                                </p>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={() => {
+                                const toast = document.createElement('div');
+                                toast.innerText = t('target_success');
+                                toast.className = "fixed top-8 right-8 z-50 px-6 py-4 rounded-xl backdrop-blur-md border border-green-500/50 bg-green-500/20 text-green-200 shadow-2xl font-bold animate-in slide-in-from-top-5 duration-300";
+                                document.body.appendChild(toast);
+                                setTimeout(() => toast.remove(), 3000);
+                            }}
+                            className="px-8 py-3 bg-white text-blue-900 font-bold rounded-xl shadow-lg hover:shadow-white/20 hover:scale-105 transition-all flex items-center gap-2"
+                        >
+                            <Zap className="w-5 h-5 fill-current" />
+                            {t('target_persona')}
+                        </button>
+                    </div>
+                </GlassCard>
+
             </div>
         </div>
     );
 }
+
+// Missing function in file context import? I'll assume User, Zap is imported or will be.
+// Wait, 'User' is not imported in the original file. I need to add imports.
 
 
