@@ -55,8 +55,8 @@ export async function POST(req: Request) {
                 userId: user.id,
                 planName: planName,
             },
-            success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?payment=success`,
-            cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/subscription?payment=cancelled`,
+            success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://lumina-ados.vercel.app'}/dashboard?payment=success`,
+            cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://lumina-ados.vercel.app'}/subscription?payment=cancelled`,
         });
 
         return NextResponse.json({ sessionId: session.id, url: session.url });
