@@ -16,6 +16,7 @@ export const PricingSection = () => {
 
     const pricingTiers = [
         {
+            id: 'Lite',
             name: t('tier_lite'),
             price: 490,
             description: t('desc_lite'),
@@ -26,6 +27,7 @@ export const PricingSection = () => {
             icon: Zap,
         },
         {
+            id: 'Pro',
             name: t('tier_pro'),
             price: 1290,
             description: t('desc_pro'),
@@ -43,6 +45,7 @@ export const PricingSection = () => {
             icon: Crown,
         },
         {
+            id: 'Agency',
             name: t('tier_agency'),
             price: 3990,
             description: t('desc_agency'),
@@ -61,17 +64,42 @@ export const PricingSection = () => {
         }
     ];
 
-    const handleSubscribe = (tierName: string) => {
-        setLoadingTier(tierName);
+    const handleSubscribe = async (tierId: string) => {
+        setLoadingTier(tierId);
+        setToast(null);
 
-        // Simulate API call
-        setTimeout(() => {
+        try {
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    priceId: tierId, // In real app, map to Price ID
+                    planName: tierId,
+                    isYearly,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    throw new Error('Please log in to subscribe.');
+                }
+                throw new Error(data.error || 'Checkout failed');
+            }
+
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                throw new Error('No checkout URL returned');
+            }
+        } catch (error: any) {
+            console.error('Subscription error:', error);
+            setToast({ message: error.message, type: 'error' });
             setLoadingTier(null);
-            setToast({ message: t('subscribed_success'), type: 'success' });
-
-            // Auto-dismiss toast
-            setTimeout(() => setToast(null), 3000);
-        }, 2000);
+        }
     };
 
     return (
@@ -127,11 +155,11 @@ export const PricingSection = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
                 {pricingTiers.map((tier) => {
                     const displayedPrice = isYearly ? Math.round(tier.price * 12 * 0.8) : tier.price;
-                    const isPro = tier.name === t('tier_pro');
+                    const isPro = tier.id === 'Pro';
 
                     return (
                         <GlassCard
-                            key={tier.name}
+                            key={tier.id}
                             className={cn(
                                 "relative flex flex-col p-8 transition-all duration-300",
                                 tier.visual
@@ -188,15 +216,15 @@ export const PricingSection = () => {
                             </div>
 
                             <button
-                                onClick={() => handleSubscribe(tier.name)}
+                                onClick={() => handleSubscribe(tier.id)}
                                 disabled={loadingTier !== null}
                                 className={cn(
                                     "w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2",
                                     tier.buttonStyle,
-                                    loadingTier && loadingTier !== tier.name && "opacity-50 cursor-not-allowed"
+                                    loadingTier && loadingTier !== tier.id && "opacity-50 cursor-not-allowed"
                                 )}
                             >
-                                {loadingTier === tier.name ? (
+                                {loadingTier === tier.id ? (
                                     <>
                                         <Loader2 className="w-5 h-5 animate-spin" />
                                         {t('processing')}
