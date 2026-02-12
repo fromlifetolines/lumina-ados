@@ -28,6 +28,7 @@ export const PricingSection = () => {
         },
         {
             id: 'Pro',
+            priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || 'price_1Sztz9HCliLYC2nduukV2mvb',
             name: t('tier_pro'),
             price: 1290,
             description: t('desc_pro'),
@@ -68,6 +69,9 @@ export const PricingSection = () => {
         setLoadingTier(tierId);
         setToast(null);
 
+        const tier = pricingTiers.find(t => t.id === tierId);
+        const priceId = (tier as any)?.priceId || tierId;
+
         try {
             const response = await fetch('/api/checkout', {
                 method: 'POST',
@@ -75,7 +79,7 @@ export const PricingSection = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    priceId: tierId, // In real app, map to Price ID
+                    priceId: priceId, // Pass the real Price ID if available
                     planName: tierId,
                     isYearly,
                 }),
