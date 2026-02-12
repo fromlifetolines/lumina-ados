@@ -15,7 +15,7 @@ export const Sidebar = () => {
         { name: t('campaigns'), href: '/campaigns', icon: BarChart3 },
         { name: t('analytics'), href: '/analytics', icon: PieChart },
         { name: t('audience'), href: '/audience', icon: Users },
-        { name: t('pricing'), href: '/pricing', icon: BarChart3 },
+        { name: t('subscription'), href: '/subscription', icon: BarChart3 },
         { name: t('settings'), href: '/settings', icon: Settings },
     ];
 
