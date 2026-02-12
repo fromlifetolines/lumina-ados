@@ -1,4 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lumina AdOS
+
+## 🚀 實體產品連結 (Live Demo)
+
+**正式環境網址:** [https://lumina-ados.vercel.app/](https://lumina-ados.vercel.app/)
+
+> **注意:** 此專案已從靜態展示轉向全端 SaaS 架構，請由此連結進入以使用真實的數據分析、CRM 功能與 Stripe 結帳系統。
+
+---
+
+## 📑 Table of Contents (快速導覽)
+
+- [Project Overview](#project-overview)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Deployment](#deployment)
+
+---
+
+## Project Overview
+
+Lumina AdOS is an advanced advertising intelligence platform designed for marketing teams and agencies. It aggregates data from multiple platforms (Meta, Google, TikTok, etc.) into a unified dashboard with AI-driven insights.
+
+## Key Features
+
+- **Unified Dashboard**: Real-time metrics from 7 major ad platforms.
+- **AI Smart Alerts**: Actionable insights and budget optimization suggestions.
+- **Budget Simulator**: Scenario planning with ROAS and Revenue projections.
+- **Audience Intelligence**: Demographic heatmaps and persona targeting.
+- **SaaS Subscription**: 3-tier pricing model integrated with Stripe Checkout.
+- **Authentication**: Secure Magic Link login via Supabase.
+
+## Tech Stack
+
+- **Framework**: Next.js 14+ (App Router)
+- **Styling**: Tailwind CSS + Glassmorphism Design System
+- **Database & Auth**: Supabase (@supabase/ssr)
+- **Payments**: Stripe Checkout
+- **Deployment**: Vercel (Production)
 
 ## Getting Started
 
@@ -16,21 +55,12 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The project is optimized for deployment on **Vercel**.
 
-## Learn More
+1. Connect your GitHub repository to Vercel.
+2. Add the required Environment Variables (Supabase & Stripe keys).
+3. Deploy!
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For more details, check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
