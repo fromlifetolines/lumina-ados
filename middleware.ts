@@ -33,28 +33,37 @@ export async function middleware(request: NextRequest) {
         )
 
         // This will refresh session if expired - required for Server Components
-        // https://supabase.com/docs/guides/auth/server-side/nextjs
         const {
             data: { user },
         } = await supabase.auth.getUser()
+
+        // 1. EXCLUDE auth callback from protection to prevent loops
+        if (request.nextUrl.pathname.startsWith('/auth/callback')) {
+            return response
+        }
 
         // Protected routes
         const protectedPaths = ['/dashboard', '/settings', '/analytics', '/campaigns', '/audience', '/subscription', '/report']
         const isProtected = protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path))
 
+        // 2. Redirect unauthenticated users to login
         if (isProtected && !user) {
             return NextResponse.redirect(new URL('/login', request.url))
         }
 
+        // 3. Redirect authenticated users AWAY from login page (but allow if querying for logout?)
+        // Actually, simple check: if on /login and user exists -> go to dashboard
         if (request.nextUrl.pathname === '/login' && user) {
             return NextResponse.redirect(new URL('/dashboard', request.url))
         }
+
+        // 4. Root path handling (Optional: redirect / to /dashboard if logged in, or /login if not?)
+        // Leaving root as-is (Marketing page) for now, unless requested.
+
     } catch (e) {
-        // If you are here, a Supabase client could not be created!
-        // This is likely because the environment variables are not set.
-        // We should allow the request to proceed to avoid breaking the app completely,
-        // but protected routes won't work as expected.
+        // If auth fails, don't loop. Just let the request proceed or redirect to login with error.
         console.error("Middleware error:", e);
+        // return NextResponse.redirect(new URL('/login?error=auth_error', request.url))
     }
 
     return response
