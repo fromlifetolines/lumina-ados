@@ -1,107 +1,112 @@
 'use client';
 
 import { GlassCard } from '@/components/ui/glass-card';
-import { mockData } from '@/lib/mockData';
-import { Instagram, Search, Video } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, Cell } from 'recharts';
+import { platforms, PlatformId } from '@/lib/mockData';
+import { PlatformIcon } from '@/components/ui/platform-icon';
+import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, Cell, YAxis } from 'recharts';
 import { useTranslation } from '@/lib/i18n';
+import { useCurrency } from '@/lib/currency';
 
 export const PlatformBreakdown = () => {
     const { t } = useTranslation();
-    // Video comparison data
+    const { format } = useCurrency();
+
+    // Prepare data for "Short Video Wars" (TikTok vs YouTube)
     const videoData = [
-        { name: 'TikTok', views: mockData.tiktok.metrics.reduce((a, b) => a + b.impressions, 0), color: '#000000' },
-        { name: 'Shorts', views: mockData.google.metrics.reduce((a, b) => a + b.impressions, 0) * 0.4, color: '#FF0000' }
+        {
+            name: 'TikTok',
+            engagement: parseFloat(platforms.tiktok.currentMonth.avgEngagement as string || '0'),
+            color: '#000000'
+        },
+        {
+            name: 'YouTube',
+            engagement: ((platforms.youtube.currentMonth.avgCpv as number) || 0) * 5, // Mock conversion for visualization scaling
+            color: '#ff0000'
+        },
     ];
 
+    // Prepare data for "Top Platforms ROAS"
+    const roasData = (Object.keys(platforms) as PlatformId[]).map(pid => ({
+        name: platforms[pid].name,
+        roas: platforms[pid].currentMonth.roas,
+        color: platforms[pid].color
+    })).sort((a, b) => b.roas - a.roas);
+
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            {/* Meta/IG Creative Performance */}
-            <GlassCard className="col-span-1">
-                <div className="flex items-center gap-2 mb-4">
-                    <Instagram className="w-5 h-5 text-pink-500" />
-                    <h3 className="font-bold text-white">{t('top_creatives')}</h3>
-                </div>
-                <div className="space-y-4">
-                    {mockData.meta.topCreatives?.map((creative, i) => (
-                        <div key={creative.id} className="flex items-center gap-3 group cursor-pointer">
-                            <div className="w-12 h-12 rounded-lg bg-gray-700 overflow-hidden border border-white/10 group-hover:border-pink-500/50 transition">
-                                <div className={`w-full h-full bg-gradient-to-br ${i === 0 ? 'from-purple-500 to-pink-500' : 'from-blue-500 to-teal-500'}`}></div>
-                            </div>
-                            <div className="flex-1">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-300">Creative #{creative.id}</span>
-                                    <span className="text-pink-400 font-bold">{creative.ctr}% CTR</span>
-                                </div>
-                                <div className="h-1.5 w-full bg-white/5 rounded-full mt-2 overflow-hidden">
-                                    <div
-                                        className="h-full bg-gradient-to-r from-pink-500 to-purple-500 rounded-full"
-                                        style={{ width: `${(creative.ctr / 4) * 100}%` }}
-                                    ></div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </GlassCard>
+        <GlassCard className="space-y-8">
+            <h3 className="text-xl font-bold text-white mb-6">{t('platform_battle')}</h3>
 
-            {/* SEO/GSC Performance */}
-            <GlassCard className="col-span-1">
-                <div className="flex items-center gap-2 mb-4">
-                    <Search className="w-5 h-5 text-blue-400" />
-                    <h3 className="font-bold text-white">{t('top_keywords')}</h3>
-                </div>
-                <div className="space-y-3">
-                    {mockData.seo.topKeywords?.map((kw, i) => (
-                        <div key={i} className="bg-white/5 p-3 rounded-xl border border-white/5 hover:bg-white/10 transition">
-                            <div className="flex justify-between items-center mb-1">
-                                <span className="text-sm font-medium text-white">{kw.keyword}</span>
-                                <span className="text-xs text-green-400">#{kw.position}</span>
-                            </div>
-                            <div className="flex justify-between text-xs text-gray-400">
-                                <span>{kw.impressions} Impr.</span>
-                                <span className="text-blue-400">High Intent</span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </GlassCard>
-
-            {/* Video Analytics */}
-            <GlassCard className="col-span-1">
-                <div className="flex items-center gap-2 mb-4">
-                    <Video className="w-5 h-5 text-purple-400" />
-                    <h3 className="font-bold text-white">{t('short_video_wars')}</h3>
-                </div>
-
-                <div className="h-[200px] w-full mt-4">
+            {/* 1. ROAS Comparison (Bar Chart) */}
+            <div>
+                <h4 className="text-sm text-gray-400 mb-4 uppercase tracking-wider">ROAS Leaderboard</h4>
+                <div className="h-[200px]">
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={videoData} layout="vertical" margin={{ left: 0 }}>
+                        <BarChart data={roasData} layout="vertical" margin={{ left: 40 }}>
                             <XAxis type="number" hide />
+                            <YAxis dataKey="name" type="category" width={80} stroke="#fff" fontSize={12} />
                             <Tooltip
+                                contentStyle={{ backgroundColor: '#000', border: '1px solid #333' }}
                                 cursor={{ fill: 'transparent' }}
-                                contentStyle={{ backgroundColor: 'rgba(20, 20, 40, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                                itemStyle={{ color: '#fff' }}
                             />
-                            <Bar dataKey="views" radius={[0, 4, 4, 0]} barSize={40}>
-                                {videoData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={index === 0 ? '#00f2ea' : '#ff0050'} />
+                            <Bar dataKey="roas" radius={[0, 4, 4, 0]} barSize={20}>
+                                {roasData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color} />
                                 ))}
                             </Bar>
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
-                <div className="flex justify-between px-4 text-sm mt-2">
-                    <div className="flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-full bg-[#00f2ea]"></span>
-                        <span className="text-gray-300">TikTok</span>
+            </div>
+
+            {/* 2. Short Video Wars */}
+            <div className="pt-6 border-t border-white/5">
+                <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-sm text-gray-400 uppercase tracking-wider">{t('short_video_wars')}</h4>
+                    <span className="text-xs text-blue-400 bg-blue-500/10 px-2 py-1 rounded">Engagement Rate</span>
+                </div>
+
+                <div className="flex items-center gap-4">
+                    <div className="flex-1 space-y-2">
+                        <div className="flex justify-between text-sm">
+                            <span className="flex items-center gap-2 text-white"><PlatformIcon platform="tiktok" className="w-4 h-4" /> TikTok</span>
+                            <span className="font-bold text-white">5.2%</span>
+                        </div>
+                        <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div className="h-full bg-cyan-400 w-[75%] shadow-[0_0_10px_rgba(34,211,238,0.5)]"></div>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-full bg-[#ff0050]"></span>
-                        <span className="text-gray-300">Shorts</span>
+                    <div className="text-gray-500 font-bold">VS</div>
+                    <div className="flex-1 space-y-2">
+                        <div className="flex justify-between text-sm">
+                            <span className="flex items-center gap-2 text-white"><PlatformIcon platform="youtube" className="w-4 h-4" /> YouTube</span>
+                            <span className="font-bold text-white">3.8%</span>
+                        </div>
+                        <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div className="h-full bg-red-600 w-[55%] shadow-[0_0_10px_rgba(220,38,38,0.5)]"></div>
+                        </div>
                     </div>
                 </div>
-            </GlassCard>
-        </div>
+            </div>
+
+            {/* 3. Meta vs Google Summary */}
+            <div className="pt-6 border-t border-white/5 grid grid-cols-2 gap-4">
+                <div className="p-4 bg-blue-600/10 rounded-xl border border-blue-600/20">
+                    <div className="flex items-center gap-2 mb-2">
+                        <PlatformIcon platform="meta" className="w-5 h-5" />
+                        <span className="text-blue-400 font-bold">Meta</span>
+                    </div>
+                    <p className="text-2xl font-bold text-white">{format(platforms.meta.currentMonth.revenue)}</p>
+                    <p className="text-xs text-gray-400">Total Revenue</p>
+                </div>
+                <div className="p-4 bg-red-500/10 rounded-xl border border-red-500/20">
+                    <div className="flex items-center gap-2 mb-2">
+                        <PlatformIcon platform="google" className="w-5 h-5" />
+                        <span className="text-red-400 font-bold">Google</span>
+                    </div>
+                    <p className="text-2xl font-bold text-white">{format(platforms.google.currentMonth.revenue)}</p>
+                    <p className="text-xs text-gray-400">Total Revenue</p>
+                </div>
+            </div>
+        </GlassCard>
     );
 };

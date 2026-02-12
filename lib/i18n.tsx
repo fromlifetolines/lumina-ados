@@ -116,23 +116,36 @@ const translations: Translations = {
     test_connection: { 'zh-TW': '測試連線', 'en': 'Test Connection', 'ja': '接続テスト', 'ko': '연결 테스트' },
     connected: { 'zh-TW': '已連線', 'en': 'Connected', 'ja': '接続済み', 'ko': '연결됨' },
 
-    // Metrics (Existing)
-    total_spend: { 'zh-TW': '總花費', 'en': 'Total Spend', 'ja': '総支出', 'ko': '총 지출' },
-    total_revenue: { 'zh-TW': '總營收', 'en': 'Total Revenue', 'ja': '総売上', 'ko': '총 수익' },
-    roas: { 'zh-TW': '廣告投報率', 'en': 'Blended ROAS', 'ja': '広告費用対効果', 'ko': '광고 수익률' },
-    seo_traffic: { 'zh-TW': 'SEO 流量', 'en': 'SEO Traffic', 'ja': 'SEOトラフィック', 'ko': 'SEO 트래픽' },
-    traffic_overview: { 'zh-TW': '流量總覽', 'en': 'Traffic Overview', 'ja': 'トラフィック概要', 'ko': '트래픽 개요' },
-    paid_vs_organic: { 'zh-TW': '付費 vs 自然流量', 'en': 'Paid vs. Organic performance', 'ja': '有料 vs 自然検索', 'ko': '유료 vs 오가닉 성과' },
-    top_creatives: { 'zh-TW': '熱門素材', 'en': 'Top Creatives', 'ja': 'トップクリエイティブ', 'ko': '인기 소재' },
-    top_keywords: { 'zh-TW': '熱門關鍵字', 'en': 'Top Keywords', 'ja': 'トップキーワード', 'ko': '인기 키워드' },
-    short_video_wars: { 'zh-TW': '短影音對決', 'en': 'Short Video Wars', 'ja': 'ショート動画競争', 'ko': '숏폼 경쟁' },
-    consultant_planner: { 'zh-TW': '顧問級預算規劃', 'en': 'The "Consultant" Planner', 'ja': 'コンサルタントプランナー', 'ko': '"컨설턴트" 플래너' },
-    adjust_budget: { 'zh-TW': '調整預算以預測營收', 'en': 'Adjust budget to see revenue projections', 'ja': '予算を調整して収益を予測', 'ko': '예산을 조정하여 예상 수익 확인' },
-    monthly_budget: { 'zh-TW': '月廣告預算', 'en': 'Monthly Ad Budget', 'ja': '月間広告予算', 'ko': '월간 광고 예산' },
-    target_roas: { 'zh-TW': '目標 ROAS', 'en': 'Target ROAS', 'ja': '目標ROAS', 'ko': '목표 ROAS' },
-    projected_revenue: { 'zh-TW': '預測營收', 'en': 'Projected Revenue', 'ja': '予想収益', 'ko': '예상 수익' },
-    apply_forecast: { 'zh-TW': '套用預測', 'en': 'Apply to Forecast', 'ja': '予測を適用', 'ko': '예측 적용' },
-    profit: { 'zh-TW': '淨利', 'en': 'Profit', 'ja': '利益', 'ko': '이익' },
+    // Platforms
+    meta: { 'zh-TW': 'Meta', 'en': 'Meta', 'ja': 'Meta', 'ko': 'Meta' },
+    google: { 'zh-TW': 'Google', 'en': 'Google', 'ja': 'Google', 'ko': 'Google' },
+    youtube: { 'zh-TW': 'YouTube', 'en': 'YouTube', 'ja': 'YouTube', 'ko': 'YouTube' },
+    tiktok: { 'zh-TW': 'TikTok', 'en': 'TikTok', 'ja': 'TikTok', 'ko': 'TikTok' },
+    twitter: { 'zh-TW': 'X (Twitter)', 'en': 'X (Twitter)', 'ja': 'X (Twitter)', 'ko': 'X (Twitter)' },
+    linkedin: { 'zh-TW': 'LinkedIn', 'en': 'LinkedIn', 'ja': 'LinkedIn', 'ko': 'LinkedIn' },
+    line: { 'zh-TW': 'LINE OA', 'en': 'LINE OA', 'ja': 'LINE公式', 'ko': 'LINE OA' },
+
+    // Smart Alerts
+    smart_alert_title: { 'zh-TW': '智慧警示', 'en': 'Smart Alert', 'ja': 'スマートアラート', 'ko': '스마트 알림' },
+    smart_alert_cpa_warning: {
+        'zh-TW': '⚠️ Facebook CPA 增加了 15%。建議暫停「Creative_A」。',
+        'en': "⚠️ Facebook CPA increased by 15%. Recommend pausing 'Creative_A'.",
+        'ja': '⚠️ FacebookのCPAが15%増加しました。「Creative_A」の停止を推奨します。',
+        'ko': '⚠️ Facebook CPA가 15% 증가했습니다. \'Creative_A\' 일시 중지를 권장합니다.'
+    },
+
+    // Actions
+    optimize: { 'zh-TW': '優化', 'en': 'Optimize', 'ja': '最適化', 'ko': '최적화' },
+    scale: { 'zh-TW': '擴展', 'en': 'Scale', 'ja': '拡大', 'ko': '스ケールアップ' },
+    connect: { 'zh-TW': '連結', 'en': 'Connect', 'ja': '接続', 'ko': '연결' },
+
+
+    // Budget Simulator
+    budget_simulator: { 'zh-TW': '預算模擬器', 'en': 'Budget Simulator', 'ja': '予算シミュレーター', 'ko': '예산 시뮬레이터' },
+    current_allocation: { 'zh-TW': '目前分配', 'en': 'Current Allocation', 'ja': '現在の配分', 'ko': '현재 할당' },
+    projected_revenue_sim: { 'zh-TW': '預測總營收', 'en': 'Projected Total Revenue', 'ja': '予想総売上', 'ko': '예상 총 수익' },
+
+    // Metrics (Existing) -> Removed duplicates here as they are already defined above or effectively merged.
 };
 
 interface LanguageContextType {

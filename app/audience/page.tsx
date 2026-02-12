@@ -3,7 +3,7 @@
 import { GlassCard } from '@/components/ui/glass-card';
 import { useTranslation } from '@/lib/i18n';
 import { Header } from '@/components/dashboard/Header';
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
 const genderData = [
     { name: 'Male', value: 45 },
@@ -113,5 +113,4 @@ export default function AudiencePage() {
     );
 }
 
-// Re-add legend since I missed importing it
-import { Legend } from 'recharts';
+

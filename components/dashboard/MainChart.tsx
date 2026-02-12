@@ -1,87 +1,102 @@
 'use client';
 
 import { GlassCard } from '@/components/ui/glass-card';
-import { mockData, getAggregatedMetrics } from '@/lib/mockData';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useTranslation } from '@/lib/i18n';
+import { useCurrency } from '@/lib/currency';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { DailyMetric } from '@/lib/mockData';
 
-export const MainChart = () => {
+interface MainChartProps {
+    data: DailyMetric[];
+}
+
+export const MainChart = ({ data }: MainChartProps) => {
     const { t } = useTranslation();
+    const { format } = useCurrency(); // Use currency formatter for tooltip
 
-    const data = getAggregatedMetrics().map(d => ({
+    // Ensure we have data
+    if (!data || data.length === 0) {
+        return (
+            <GlassCard className="h-[400px] flex items-center justify-center">
+                <p className="text-gray-400">No data available for the selected filter.</p>
+            </GlassCard>
+        );
+    }
+
+    // Format Date for X-Axis (MM/DD)
+    const formattedData = data.map(d => ({
         ...d,
-        paidTraffic: d.clicks,
-        organicTraffic: mockData.seo.metrics.find(m => m.date === d.date)?.clicks || 0,
+        displayDate: d.date.substring(5).replace('-', '/')
     }));
 
     return (
-        <GlassCard className="mb-8">
-            <div className="flex justify-between items-center mb-6">
+        <GlassCard className="h-[450px] flex flex-col relative overflow-hidden">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-6 z-10">
                 <div>
-                    <h3 className="text-xl font-bold text-white">{t('traffic_overview')}</h3>
-                    <p className="text-sm text-gray-400">{t('paid_vs_organic')}</p>
-                </div>
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-full bg-blue-500"></span>
-                        <span className="text-xs text-gray-300">Paid</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-full bg-purple-500"></span>
-                        <span className="text-xs text-gray-300">Organic</span>
-                    </div>
+                    <h3 className="text-lg font-bold text-white mb-1">{t('paid_vs_organic')}</h3>
+                    <p className="text-sm text-gray-400">{t('campaign_overview')}</p>
                 </div>
             </div>
 
-            <div className="h-[350px] w-full">
+            {/* Chart */}
+            <div className="flex-1 w-full min-h-0">
                 <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <AreaChart data={formattedData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                         <defs>
-                            <linearGradient id="colorPaid" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                            <linearGradient id="colorSpend" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
                                 <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                             </linearGradient>
-                            <linearGradient id="colorOrg" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8} />
-                                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                            <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                         <XAxis
-                            dataKey="date"
-                            stroke="#9ca3af"
+                            dataKey="displayDate"
+                            stroke="#6b7280"
                             fontSize={12}
                             tickLine={false}
                             axisLine={false}
-                            tickFormatter={(val) => val.slice(5)}
                         />
                         <YAxis
-                            stroke="#9ca3af"
+                            stroke="#6b7280"
                             fontSize={12}
                             tickLine={false}
                             axisLine={false}
-                            tickFormatter={(val) => `${val}`}
+                            tickFormatter={(val) => `$${val / 1000}k`}
                         />
                         <Tooltip
-                            contentStyle={{ backgroundColor: 'rgba(20, 20, 40, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                            contentStyle={{
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                backdropFilter: 'blur(10px)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                borderRadius: '12px',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                            }}
                             itemStyle={{ color: '#fff' }}
-                            labelStyle={{ color: '#9ca3af', marginBottom: '8px' }}
+                            formatter={(value: any) => [format(value as number), '']}
                         />
+                        <Legend wrapperStyle={{ paddingTop: '20px' }} />
                         <Area
                             type="monotone"
-                            dataKey="paidTraffic"
+                            dataKey="spend"
                             stroke="#3b82f6"
-                            fillOpacity={1}
-                            fill="url(#colorPaid)"
                             strokeWidth={3}
+                            fillOpacity={1}
+                            fill="url(#colorSpend)"
+                            name={t('total_spend')}
                         />
                         <Area
                             type="monotone"
-                            dataKey="organicTraffic"
-                            stroke="#8b5cf6"
-                            fillOpacity={1}
-                            fill="url(#colorOrg)"
+                            dataKey="revenue"
+                            stroke="#10b981"
                             strokeWidth={3}
+                            fillOpacity={1}
+                            fill="url(#colorRevenue)"
+                            name={t('total_revenue')}
                         />
                     </AreaChart>
                 </ResponsiveContainer>

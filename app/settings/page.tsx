@@ -3,23 +3,29 @@
 import { GlassCard } from '@/components/ui/glass-card';
 import { Header } from '@/components/dashboard/Header';
 import { useTranslation } from '@/lib/i18n';
+import { PlatformIcon } from '@/components/ui/platform-icon';
+import { PlatformId, platforms } from '@/lib/mockData';
 import { useState } from 'react';
-import { User, Key, Bell, Check, Loader2 } from 'lucide-react';
+import { User, Key, Bell, Check, Loader2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
 export default function SettingsPage() {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState('api');
-    const [testingConnection, setTestingConnection] = useState(false);
-    const [connected, setConnected] = useState(false);
+    const [connections, setConnections] = useState<Record<string, boolean>>({
+        meta: true, // Simulate existing connection
+        google: false
+    });
+    const [loading, setLoading] = useState<string | null>(null);
 
-    const handleTestConnection = () => {
-        setTestingConnection(true);
+    const handleConnect = (pid: string) => {
+        setLoading(pid);
+        // Simulate OAuth delay
         setTimeout(() => {
-            setTestingConnection(false);
-            setConnected(true);
-        }, 2000);
+            setConnections(prev => ({ ...prev, [pid]: !prev[pid] }));
+            setLoading(null);
+        }, 1500);
     };
 
     const tabs = [
@@ -29,7 +35,7 @@ export default function SettingsPage() {
     ];
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8">
+        <div className="max-w-7xl mx-auto space-y-8 pb-20">
             <Header />
             <h2 className="text-2xl font-bold text-white mb-6">{t('settings')}</h2>
 
@@ -63,45 +69,43 @@ export default function SettingsPage() {
                                     <p className="text-gray-400 text-sm">Connect your ad platforms to pull real-time data.</p>
                                 </div>
 
-                                <div className="space-y-6">
-                                    <div className="space-y-2">
-                                        <label className="text-sm text-gray-300">{t('meta_pixel_id')}</label>
-                                        <input type="password" value="1234567890" disabled className="glass-input w-full opacity-50 cursor-not-allowed" />
-                                    </div>
+                                <div className="grid grid-cols-1 gap-4">
+                                    {(Object.keys(platforms) as PlatformId[]).map((pid) => (
+                                        <div key={pid} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+                                            <div className="flex items-center gap-4">
+                                                <PlatformIcon platform={pid} className="w-10 h-10" />
+                                                <div>
+                                                    <p className="font-bold text-white capitalize">{platforms[pid].name}</p>
+                                                    <p className="text-xs text-gray-500">
+                                                        {connections[pid]
+                                                            ? 'Syncing daily • Last sync: 2m ago'
+                                                            : 'Not connected'}
+                                                    </p>
+                                                </div>
+                                            </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-sm text-gray-300">{t('google_ads_id')}</label>
-                                        <input type="text" placeholder="XXX-XXX-XXXX" className="glass-input w-full" />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-sm text-gray-300">{t('ga4_id')}</label>
-                                        <input type="text" placeholder="G-XXXXXXXXXX" className="glass-input w-full" />
-                                    </div>
-                                </div>
-
-                                <div className="pt-6 border-t border-white/5 flex items-center gap-4">
-                                    <button
-                                        onClick={handleTestConnection}
-                                        disabled={testingConnection || connected}
-                                        className={cn(
-                                            "px-6 py-2 rounded-lg font-bold flex items-center gap-2 transition-all",
-                                            connected ? "bg-green-500/20 text-green-400 border border-green-500/50" : "bg-blue-600 hover:bg-blue-500 text-white"
-                                        )}
-                                    >
-                                        {testingConnection && <Loader2 className="w-4 h-4 animate-spin" />}
-                                        {connected ? (
-                                            <><Check className="w-4 h-4" /> {t('connected')}</>
-                                        ) : (
-                                            t('test_connection')
-                                        )}
-                                    </button>
-
-                                    {connected && (
-                                        <span className="text-sm text-green-400 animate-pulse">
-                                            Data sync active.
-                                        </span>
-                                    )}
+                                            <button
+                                                onClick={() => handleConnect(pid)}
+                                                disabled={loading === pid}
+                                                className={cn(
+                                                    "px-4 py-2 rounded-lg text-sm font-medium transition-all min-w-[120px]",
+                                                    connections[pid]
+                                                        ? "bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20"
+                                                        : "bg-blue-600 text-white hover:bg-blue-500" // Connect
+                                                )}
+                                            >
+                                                {loading === pid ? (
+                                                    <Loader2 className="w-4 h-4 animate-spin mx-auto" />
+                                                ) : connections[pid] ? (
+                                                    <span className="flex items-center justify-center gap-2">
+                                                        <Check className="w-4 h-4" /> {t('connected')}
+                                                    </span>
+                                                ) : (
+                                                    t('connect')
+                                                )}
+                                            </button>
+                                        </div>
+                                    ))}
                                 </div>
                             </motion.div>
                         )}

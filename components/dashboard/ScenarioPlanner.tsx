@@ -2,89 +2,110 @@
 
 import { GlassCard } from '@/components/ui/glass-card';
 import { useState } from 'react';
-import { Wand2 } from 'lucide-react';
+import { platforms } from '@/lib/mockData'; // New import
 import { useTranslation } from '@/lib/i18n';
+import { useCurrency } from '@/lib/currency';
+import { RefreshCw, Calculator, ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 export const ScenarioPlanner = () => {
     const { t } = useTranslation();
-    const [budget, setBudget] = useState(50000);
-    const [roas, setRoas] = useState(3.5);
+    const { format } = useCurrency();
+    const [budget, setBudget] = useState(10000);
+    const [targetRoas, setTargetRoas] = useState(3.5);
+    const [isCalculating, setIsCalculating] = useState(false);
 
-    const projectedRevenue = Math.round(budget * roas);
+    // Simple projection logic based on blended ROAS assumption + user input
+    // In valid app this would use historical curve
+    const projectedRevenue = budget * targetRoas;
     const profit = projectedRevenue - budget;
 
+    const handleApply = () => {
+        setIsCalculating(true);
+        setTimeout(() => setIsCalculating(false), 800);
+    };
+
     return (
-        <GlassCard className="border-yellow-500/20 shadow-yellow-500/5 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-                <Wand2 className="w-32 h-32 text-yellow-400" />
+        <GlassCard className="relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-50">
+                <Calculator className="w-12 h-12 text-white/5" />
             </div>
 
-            <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 bg-yellow-500/20 rounded-lg text-yellow-400">
-                        <Wand2 className="w-6 h-6" />
+            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                {t('consultant_planner')}
+            </h3>
+
+            <div className="space-y-6">
+                {/* Budget Slider */}
+                <div className="space-y-3">
+                    <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">{t('monthly_budget')}</span>
+                        <span className="text-white font-mono font-bold">{format(budget)}</span>
                     </div>
-                    <div>
-                        <h3 className="text-xl font-bold text-white">{t('consultant_planner')}</h3>
-                        <p className="text-sm text-gray-400">{t('adjust_budget')}</p>
+                    <input
+                        type="range"
+                        min="1000"
+                        max="50000"
+                        step="1000"
+                        value={budget}
+                        onChange={(e) => setBudget(Number(e.target.value))}
+                        className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:accent-blue-400 transition-all"
+                    />
+                </div>
+
+                {/* Target ROAS Slider */}
+                <div className="space-y-3">
+                    <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">{t('target_roas')}</span>
+                        <span className="text-yellow-400 font-mono font-bold">{targetRoas}x</span>
+                    </div>
+                    <input
+                        type="range"
+                        min="1.0"
+                        max="10.0"
+                        step="0.1"
+                        value={targetRoas}
+                        onChange={(e) => setTargetRoas(Number(e.target.value))}
+                        className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-yellow-500 hover:accent-yellow-400 transition-all"
+                    />
+                </div>
+
+                {/* Results Card */}
+                <div className="bg-black/30 rounded-xl p-4 border border-white/5 space-y-3">
+                    <div className="flex justify-between items-center">
+                        <span className="text-gray-400 text-sm">{t('projected_revenue')}</span>
+                        <motion.span
+                            key={projectedRevenue}
+                            initial={{ scale: 1.1, color: '#fff' }}
+                            animate={{ scale: 1, color: '#34d399' }}
+                            className="text-lg font-bold"
+                        >
+                            {format(projectedRevenue)}
+                        </motion.span>
+                    </div>
+
+                    <div className="flex justify-between items-center pt-2 border-t border-white/5">
+                        <span className="text-gray-400 text-sm">{t('profit')}</span>
+                        <span className={cn("text-lg font-bold", profit > 0 ? "text-blue-400" : "text-red-400")}>
+                            {profit > 0 ? '+' : ''}{format(profit)}
+                        </span>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <div className="space-y-8">
-                        <div>
-                            <div className="flex justify-between mb-2">
-                                <span className="text-sm font-medium text-gray-300">{t('monthly_budget')}</span>
-                                <span className="text-lg font-bold text-white">${budget.toLocaleString()}</span>
-                            </div>
-                            <input
-                                type="range"
-                                min="10000"
-                                max="200000"
-                                step="1000"
-                                value={budget}
-                                onChange={(e) => setBudget(Number(e.target.value))}
-                                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-yellow-400 hover:accent-yellow-300"
-                            />
-                            <div className="flex justify-between text-xs text-gray-500 mt-2">
-                                <span>$10k</span>
-                                <span>$200k</span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div className="flex justify-between mb-2">
-                                <span className="text-sm font-medium text-gray-300">{t('target_roas')}</span>
-                                <span className="text-lg font-bold text-white">{roas}x</span>
-                            </div>
-                            <input
-                                type="range"
-                                min="1.0"
-                                max="10.0"
-                                step="0.1"
-                                value={roas}
-                                onChange={(e) => setRoas(Number(e.target.value))}
-                                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-400 hover:accent-blue-300"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col justify-center space-y-6">
-                        <div className="p-6 rounded-2xl bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/20">
-                            <p className="text-sm text-yellow-200/70 uppercase tracking-wider mb-1">{t('projected_revenue')}</p>
-                            <div className="flex items-baseline gap-1">
-                                <span className="text-4xl font-bold text-white">${projectedRevenue.toLocaleString()}</span>
-                                <span className="text-green-400 text-sm font-medium">
-                                    (+${profit.toLocaleString()} {t('profit')})
-                                </span>
-                            </div>
-                        </div>
-
-                        <button className="w-full py-4 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl font-bold text-black hover:opacity-90 transition shadow-lg shadow-orange-500/20">
+                <button
+                    onClick={handleApply}
+                    className="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white font-bold transition-all flex items-center justify-center gap-2 group-hover:border-blue-500/30"
+                >
+                    {isCalculating ? (
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                    ) : (
+                        <>
                             {t('apply_forecast')}
-                        </button>
-                    </div>
-                </div>
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </>
+                    )}
+                </button>
             </div>
         </GlassCard>
     );
