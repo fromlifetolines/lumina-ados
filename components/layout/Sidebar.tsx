@@ -10,6 +10,7 @@ const navItems = [
     { name: 'Campaigns', href: '/campaigns', icon: BarChart3 },
     { name: 'Analytics', href: '/analytics', icon: PieChart },
     { name: 'Audience', href: '/audience', icon: Users },
+    { name: 'Pricing', href: '/pricing', icon: BarChart3 },
     { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
