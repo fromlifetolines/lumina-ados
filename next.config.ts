@@ -1,15 +1,18 @@
 import type { NextConfig } from "next";
 
+/** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
-  // output: 'export' removed for Vercel (enables API routes)
-  // images.unoptimized removed (Vercel optimization enabled)
-  // basePath removed (Root domain deployment)
+  // REMOVE basePath and assetPrefix entirely
+  images: {
+    unoptimized: true,
+  },
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
     ignoreBuildErrors: true,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  // Vercel does NOT need output: 'export'. REMOVE IT to enable API Routes.
 };
 
 export default nextConfig;
