@@ -3,11 +3,14 @@
 import { GlassCard } from '@/components/ui/glass-card';
 import { mockData, getAggregatedMetrics } from '@/lib/mockData';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useTranslation } from '@/lib/i18n';
 
 export const MainChart = () => {
+    const { t } = useTranslation();
+
     const data = getAggregatedMetrics().map(d => ({
         ...d,
-        paidTraffic: d.clicks, // Simplified for demo
+        paidTraffic: d.clicks,
         organicTraffic: mockData.seo.metrics.find(m => m.date === d.date)?.clicks || 0,
     }));
 
@@ -15,8 +18,8 @@ export const MainChart = () => {
         <GlassCard className="mb-8">
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h3 className="text-xl font-bold text-white">Traffic Overview</h3>
-                    <p className="text-sm text-gray-400">Paid vs. Organic performance over time</p>
+                    <h3 className="text-xl font-bold text-white">{t('traffic_overview')}</h3>
+                    <p className="text-sm text-gray-400">{t('paid_vs_organic')}</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">

@@ -4,18 +4,20 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, BarChart3, PieChart, Settings, Users, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const navItems = [
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { name: 'Campaigns', href: '/campaigns', icon: BarChart3 },
-    { name: 'Analytics', href: '/analytics', icon: PieChart },
-    { name: 'Audience', href: '/audience', icon: Users },
-    { name: 'Pricing', href: '/pricing', icon: BarChart3 },
-    { name: 'Settings', href: '/settings', icon: Settings },
-];
+import { useTranslation } from '@/lib/i18n';
 
 export const Sidebar = () => {
     const pathname = usePathname();
+    const { t } = useTranslation();
+
+    const navItems = [
+        { name: t('dashboard'), href: '/', icon: LayoutDashboard },
+        { name: t('campaigns'), href: '/campaigns', icon: BarChart3 },
+        { name: t('analytics'), href: '/analytics', icon: PieChart },
+        { name: t('audience'), href: '/audience', icon: Users },
+        { name: t('pricing'), href: '/pricing', icon: BarChart3 },
+        { name: t('settings'), href: '/settings', icon: Settings },
+    ];
 
     return (
         <aside className="fixed left-0 top-0 h-screen w-64 glass border-r border-white/10 flex flex-col z-50">
@@ -49,7 +51,7 @@ export const Sidebar = () => {
             <div className="p-4 border-t border-white/5">
                 <button className="flex items-center gap-3 px-4 py-3 w-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
                     <LogOut className="w-5 h-5" />
-                    <span className="font-medium">Logout</span>
+                    <span className="font-medium">{t('logout')}</span>
                 </button>
             </div>
         </aside>

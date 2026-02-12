@@ -2,20 +2,25 @@
 
 import { Bell, Search } from 'lucide-react';
 import { DateRangePicker } from '@/components/ui/date-range-picker';
+import { useTranslation } from '@/lib/i18n';
+import { LanguageSwitcher } from '@/components/ui/language-switcher';
 
 export const Header = () => {
+    const { t } = useTranslation();
+
     return (
         <header className="flex items-center justify-between mb-8">
             <div>
                 <h2 className="text-3xl font-bold text-white tracking-tight">
-                    Welcome back, <span className="text-gradient">Howard</span>.
+                    {t('welcome_back')}, <span className="text-gradient">Howard</span>.
                 </h2>
                 <p className="text-gray-400 mt-1">
-                    Here&apos;s your campaign performance overview.
+                    {t('campaign_overview')}
                 </p>
             </div>
 
             <div className="flex items-center gap-4">
+                <LanguageSwitcher />
                 <DateRangePicker />
 
                 <div className="glass p-2 rounded-xl cursor-pointer hover:bg-white/10 transition">

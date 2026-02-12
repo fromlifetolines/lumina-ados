@@ -4,12 +4,14 @@ import { GlassCard } from '@/components/ui/glass-card';
 import { mockData } from '@/lib/mockData';
 import { Instagram, Search, Video } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, Cell } from 'recharts';
+import { useTranslation } from '@/lib/i18n';
 
 export const PlatformBreakdown = () => {
+    const { t } = useTranslation();
     // Video comparison data
     const videoData = [
-        { name: 'TikTok', views: mockData.tiktok.metrics.reduce((a, b) => a + b.impressions, 0), color: '#000000' }, // TikTok black/neon
-        { name: 'Shorts', views: mockData.google.metrics.reduce((a, b) => a + b.impressions, 0) * 0.4, color: '#FF0000' } // YouTube red
+        { name: 'TikTok', views: mockData.tiktok.metrics.reduce((a, b) => a + b.impressions, 0), color: '#000000' },
+        { name: 'Shorts', views: mockData.google.metrics.reduce((a, b) => a + b.impressions, 0) * 0.4, color: '#FF0000' }
     ];
 
     return (
@@ -18,13 +20,12 @@ export const PlatformBreakdown = () => {
             <GlassCard className="col-span-1">
                 <div className="flex items-center gap-2 mb-4">
                     <Instagram className="w-5 h-5 text-pink-500" />
-                    <h3 className="font-bold text-white">Top Creatives</h3>
+                    <h3 className="font-bold text-white">{t('top_creatives')}</h3>
                 </div>
                 <div className="space-y-4">
                     {mockData.meta.topCreatives?.map((creative, i) => (
                         <div key={creative.id} className="flex items-center gap-3 group cursor-pointer">
                             <div className="w-12 h-12 rounded-lg bg-gray-700 overflow-hidden border border-white/10 group-hover:border-pink-500/50 transition">
-                                {/* Placeholder for image - using gradient */}
                                 <div className={`w-full h-full bg-gradient-to-br ${i === 0 ? 'from-purple-500 to-pink-500' : 'from-blue-500 to-teal-500'}`}></div>
                             </div>
                             <div className="flex-1">
@@ -48,7 +49,7 @@ export const PlatformBreakdown = () => {
             <GlassCard className="col-span-1">
                 <div className="flex items-center gap-2 mb-4">
                     <Search className="w-5 h-5 text-blue-400" />
-                    <h3 className="font-bold text-white">Top Keywords</h3>
+                    <h3 className="font-bold text-white">{t('top_keywords')}</h3>
                 </div>
                 <div className="space-y-3">
                     {mockData.seo.topKeywords?.map((kw, i) => (
@@ -70,7 +71,7 @@ export const PlatformBreakdown = () => {
             <GlassCard className="col-span-1">
                 <div className="flex items-center gap-2 mb-4">
                     <Video className="w-5 h-5 text-purple-400" />
-                    <h3 className="font-bold text-white">Short Video Wars</h3>
+                    <h3 className="font-bold text-white">{t('short_video_wars')}</h3>
                 </div>
 
                 <div className="h-[200px] w-full mt-4">

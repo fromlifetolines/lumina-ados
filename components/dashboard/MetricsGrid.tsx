@@ -4,21 +4,21 @@ import { GlassCard } from '@/components/ui/glass-card';
 import { getAggregatedMetrics } from '@/lib/mockData';
 import { ArrowUpRight, ArrowDownRight, DollarSign, TrendingUp, Activity, MousePointer } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
+import { useTranslation } from '@/lib/i18n';
 
 export const MetricsGrid = () => {
+    const { t } = useTranslation();
     const data = getAggregatedMetrics();
-    // Get last 7 days for sparkline
     const sparkData = data.slice(-7);
 
-    // Calculate totals
     const totalSpend = data.reduce((acc, curr) => acc + curr.spend, 0);
     const totalRevenue = data.reduce((acc, curr) => acc + curr.revenue, 0);
     const blendedRoas = totalSpend > 0 ? totalRevenue / totalSpend : 0;
-    const totalTraffic = data.reduce((acc, curr) => acc + curr.clicks, 0); // simplistic proxy
+    const totalTraffic = data.reduce((acc, curr) => acc + curr.clicks, 0);
 
     const metrics = [
         {
-            label: 'Total Spend',
+            label: t('total_spend'),
             value: `$${totalSpend.toLocaleString()}`,
             change: '+12.5%',
             trend: 'up',
@@ -27,7 +27,7 @@ export const MetricsGrid = () => {
             dataKey: 'spend'
         },
         {
-            label: 'Blended ROAS',
+            label: t('roas'),
             value: blendedRoas.toFixed(2),
             change: '-2.1%',
             trend: 'down',
@@ -36,7 +36,7 @@ export const MetricsGrid = () => {
             dataKey: 'roas'
         },
         {
-            label: 'Total Revenue',
+            label: t('total_revenue'),
             value: `$${totalRevenue.toLocaleString()}`,
             change: '+8.2%',
             trend: 'up',
@@ -45,11 +45,11 @@ export const MetricsGrid = () => {
             dataKey: 'revenue'
         },
         {
-            label: 'SEO Traffic',
+            label: t('seo_traffic'),
             value: totalTraffic.toLocaleString(),
             change: '+5.4%',
             trend: 'up',
-            icon: MousePointer, // Proxy for traffic
+            icon: MousePointer,
             color: 'text-pink-400',
             dataKey: 'clicks'
         }
@@ -77,7 +77,6 @@ export const MetricsGrid = () => {
                         <span className="text-gray-500 text-xs">vs last month</span>
                     </div>
 
-                    {/* Sparkline */}
                     <div className="h-12 w-full absolute bottom-0 left-0 right-0 opacity-30 group-hover:opacity-50 transition-opacity">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={sparkData}>
