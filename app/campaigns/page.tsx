@@ -47,7 +47,7 @@ export default function CampaignsPage() {
                     <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
                     <input
                         type="text"
-                        placeholder="Search campaigns..."
+                        placeholder={t('search_campaigns') || "Search campaigns..."}
                         className="glass-input pl-10 w-64"
                     />
                 </div>
@@ -118,7 +118,7 @@ export default function CampaignsPage() {
                                                 <button
                                                     onClick={() => setSelectedAction({ type: 'optimize', id: campaign.id })}
                                                     className="p-2 bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-colors tooltip"
-                                                    title="AI Optimization Recommended"
+                                                    title={t('ai_opt_recommended')}
                                                 >
                                                     <Zap className="w-4 h-4" />
                                                 </button>
@@ -126,7 +126,7 @@ export default function CampaignsPage() {
                                                 <button
                                                     onClick={() => setSelectedAction({ type: 'scale', id: campaign.id })}
                                                     className="p-2 bg-green-500/20 text-green-400 hover:bg-green-500 hover:text-white rounded-lg transition-colors"
-                                                    title="Scale Budget"
+                                                    title={t('scale_budget')}
                                                 >
                                                     <TrendingUp className="w-4 h-4" />
                                                 </button>
@@ -158,20 +158,17 @@ export default function CampaignsPage() {
                             className="bg-[#0f172a] border border-white/10 p-8 rounded-2xl max-w-md w-full shadow-2xl relative"
                         >
                             <h3 className="text-xl font-bold text-white mb-4">
-                                {selectedAction.type === 'optimize' ? '🤖 AI Optimization' : '🚀 Scale Campaign'}
+                                {selectedAction.type === 'optimize' ? t('ai_optimization') : t('scale_campaign')}
                             </h3>
 
                             <div className="space-y-4 mb-8">
                                 {selectedAction.type === 'optimize' ? (
                                     <p className="text-gray-300">
-                                        AI detected high frequency on <span className="text-white font-bold">Creative_A</span>.
-                                        Recommendation: <span className="text-red-400">Decrease budget by 20%</span> and refresh creatives.
+                                        {t('ai_opt_insight')}
                                     </p>
                                 ) : (
                                     <p className="text-gray-300">
-                                        This campaign is performing exceptionally well (ROAS 3.0+).
-                                        Recommendation: <span className="text-green-400">Increase budget by $500</span>.
-                                        Projected extra revenue: <span className="text-white font-bold">$1,850</span>.
+                                        {t('scale_insight')}
                                     </p>
                                 )}
                             </div>
@@ -184,13 +181,13 @@ export default function CampaignsPage() {
                                     )}
                                     onClick={() => setSelectedAction(null)}
                                 >
-                                    {selectedAction.type === 'optimize' ? 'Apply Fix' : 'Confirm Increase'}
+                                    {selectedAction.type === 'optimize' ? t('apply_fix') : t('confirm_increase')}
                                 </button>
                                 <button
                                     className="px-6 py-3 rounded-xl border border-white/10 hover:bg-white/5 text-gray-400 font-bold"
                                     onClick={() => setSelectedAction(null)}
                                 >
-                                    Cancel
+                                    {t('cancel')}
                                 </button>
                             </div>
                         </motion.div>

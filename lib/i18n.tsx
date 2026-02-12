@@ -138,14 +138,69 @@ const translations: Translations = {
     optimize: { 'zh-TW': '優化', 'en': 'Optimize', 'ja': '最適化', 'ko': '최적화' },
     scale: { 'zh-TW': '擴展', 'en': 'Scale', 'ja': '拡大', 'ko': '스ケールアップ' },
     connect: { 'zh-TW': '連結', 'en': 'Connect', 'ja': '接続', 'ko': '연결' },
+    no_data: { 'zh-TW': '無資料', 'en': 'No data available', 'ja': 'データなし', 'ko': '데이터 없음' },
+    roas_leaderboard: { 'zh-TW': 'ROAS 排行榜', 'en': 'ROAS Leaderboard', 'ja': 'ROASランキング', 'ko': 'ROAS 순위' },
 
 
-    // Budget Simulator
-    budget_simulator: { 'zh-TW': '預算模擬器', 'en': 'Budget Simulator', 'ja': '予算シミュレーター', 'ko': '예산 시뮬레이터' },
+    // Campaign Actions & Modals
+    traffic_overview: { 'zh-TW': '流量總覽', 'en': 'Traffic Overview', 'ja': 'トラフィック概要', 'ko': '트래픽 개요' },
+    search_placeholder: { 'zh-TW': '搜尋資料...', 'en': 'Search data...', 'ja': 'データを検索...', 'ko': '데이터 검색...' },
+    all_platforms: { 'zh-TW': '所有平台', 'en': 'All Platforms', 'ja': 'すべてのプラットフォーム', 'ko': '모든 플랫폼' },
+    search_campaigns: { 'zh-TW': '搜尋廣告活動...', 'en': 'Search campaigns...', 'ja': 'キャンペーンを検索...', 'ko': '캠페인 검색...' },
+    ai_opt_recommended: { 'zh-TW': '建議 AI 優化', 'en': 'AI Optimization Recommended', 'ja': 'AI最適化推奨', 'ko': 'AI 최적화 추천' },
+    scale_budget: { 'zh-TW': '擴展預算', 'en': 'Scale Budget', 'ja': '予算拡大', 'ko': '예산 확대' },
+    ai_optimization: { 'zh-TW': '🤖 AI 智慧優化', 'en': '🤖 AI Optimization', 'ja': '🤖 AI最適化', 'ko': '🤖 AI 최적화' },
+    scale_campaign: { 'zh-TW': '🚀 擴展廣告活動', 'en': '🚀 Scale Campaign', 'ja': '🚀 キャンペーン拡大', 'ko': '🚀 캠페인 확대' },
+    apply_fix: { 'zh-TW': '套用修正', 'en': 'Apply Fix', 'ja': '修正を適用', 'ko': '수정 적용' },
+    confirm_increase: { 'zh-TW': '確認增加', 'en': 'Confirm Increase', 'ja': '増額を確認', 'ko': '증액 확인' },
+    cancel: { 'zh-TW': '取消', 'en': 'Cancel', 'ja': 'キャンセル', 'ko': '취소' },
+    ai_opt_insight: {
+        'zh-TW': 'AI 偵測到「Creative_A」頻率過高。建議：降低 20% 預算並更新素材。',
+        'en': 'AI detected high frequency on Creative_A. Recommendation: Decrease budget by 20% and refresh creatives.',
+        'ja': 'AIが「Creative_A」の高頻度を検出しました。推奨：予算を20%削減し、クリエイティブを更新してください。',
+        'ko': 'AI가 \'Creative_A\'의 높은 빈도를 감지했습니다. 권장 사항: 예산을 20% 줄이고 소재를 새로 고치세요.'
+    },
+    scale_insight: {
+        'zh-TW': '此活動成效極佳 (ROAS 3.0+)。建議：增加 $500 預算。預估額外營收：$1,850。',
+        'en': 'This campaign is performing exceptionally well (ROAS 3.0+). Recommendation: Increase budget by $500. Projected extra revenue: $1,850.',
+        'ja': 'このキャンペーンは非常に好調です (ROAS 3.0+)。推奨：予算を$500増額してください。予想追加収益：$1,850。',
+        'ko': '이 캠페인은 매우 성과가 좋습니다 (ROAS 3.0+). 권장 사항: 예산을 $500 늘리세요. 예상 추가 수익: $1,850.'
+    },
+    budget_allocator: { 'zh-TW': '預算分配模擬器', 'en': 'Budget Allocator', 'ja': '予算配分シミュレーター', 'ko': '예산 할당 시뮬레이터' },
+    projected_revenue: { 'zh-TW': '預估營收增長', 'en': 'Projected Revenue', 'ja': '予想収益成長', 'ko': '예상 수익 증가' },
+    confidence_score: { 'zh-TW': 'AI 預測信心指數', 'en': 'AI Confidence Score', 'ja': 'AI予測信頼度', 'ko': 'AI 예측 신뢰도' },
+    total_budget: { 'zh-TW': '總預算', 'en': 'Total Budget', 'ja': '総予算', 'ko': '총 예산' },
     current_allocation: { 'zh-TW': '目前分配', 'en': 'Current Allocation', 'ja': '現在の配分', 'ko': '현재 할당' },
-    projected_revenue_sim: { 'zh-TW': '預測總營收', 'en': 'Projected Total Revenue', 'ja': '予想総売上', 'ko': '예상 총 수익' },
+    projected_total_revenue: { 'zh-TW': '預測總營收', 'en': 'Projected Total Revenue', 'ja': '予想総売上', 'ko': '예상 총 수익' },
+    apply_forecast: { 'zh-TW': '套用預測模型', 'en': 'Apply Forecast', 'ja': '予測を適用', 'ko': '예측 적용' },
+    profit: { 'zh-TW': '利潤', 'en': 'Profit', 'ja': '利益', 'ko': '이익' },
+    monthly_budget: { 'zh-TW': '月預算', 'en': 'Monthly Budget', 'ja': '月間予算', 'ko': '월 예산' },
+    target_roas: { 'zh-TW': '目標 ROAS', 'en': 'Target ROAS', 'ja': '目標ROAS', 'ko': '목표 ROAS' },
+    consultant_planner: { 'zh-TW': '顧問規劃師', 'en': 'Consultant Planner', 'ja': 'コンサルタントプランナー', 'ko': '컨설턴트 플래너' },
+    short_video_wars: { 'zh-TW': '短影音大戰', 'en': 'Short Video Wars', 'ja': 'ショート動画戦争', 'ko': '숏폼 전쟁' },
 
-    // Metrics (Existing) -> Removed duplicates here as they are already defined above or effectively merged.
+    // Metrics & detailed terms
+    impressions: { 'zh-TW': '曝光數', 'en': 'Impressions', 'ja': 'インプレッション', 'ko': '노출 수' },
+    clicks: { 'zh-TW': '點擊數', 'en': 'Clicks', 'ja': 'クリック数', 'ko': '클릭 수' },
+    conversions: { 'zh-TW': '轉換數', 'en': 'Conversions', 'ja': 'コンバージョン', 'ko': '전환 수' },
+    revenue: { 'zh-TW': '營收', 'en': 'Revenue', 'ja': '収益', 'ko': '수익' },
+    spend: { 'zh-TW': '花費', 'en': 'Spend', 'ja': '消化額', 'ko': '지출' },
+    roas: { 'zh-TW': 'ROAS (廣告投報率)', 'en': 'ROAS', 'ja': 'ROAS', 'ko': 'ROAS' },
+    metrics_ctr: { 'zh-TW': '點擊率 (CTR)', 'en': 'CTR', 'ja': 'CTR', 'ko': 'CTR' }, // Renamed to avoid collision if necessary, or just remove if duplicated above.
+    // Actually, looking at the file, 'ctr', 'roas' were defined in 'Campaigns Page' section AND 'Metrics' section.
+    // I will remove them from the 'Metrics' section since they are duplicates.
+    cv_rate: { 'zh-TW': '轉換率', 'en': 'CV Rate', 'ja': 'CV率', 'ko': '전환율' },
+    avg_cpc: { 'zh-TW': '平均 CPC', 'en': 'Avg CPC', 'ja': '平均CPC', 'ko': '평균 CPC' },
+    search_impression_share: { 'zh-TW': '搜尋曝光比重', 'en': 'Search Impr. Share', 'ja': '検索インプレッションシェア', 'ko': '검색 노출 점유율' },
+    lead_quality_score: { 'zh-TW': '名單品質分數', 'en': 'Lead Quality Score', 'ja': 'リード品質スコア', 'ko': '리드 품질 점수' },
+    block_rate: { 'zh-TW': '封鎖率', 'en': 'Block Rate', 'ja': 'ブロック率', 'ko': '차단율' },
+    engagement_rate: { 'zh-TW': '互動率', 'en': 'Engagement Rate', 'ja': 'エンゲージメント率', 'ko': '참여율' },
+    view_rate: { 'zh-TW': '觀看率', 'en': 'View Rate', 'ja': '視聴率', 'ko': '조회율' },
+    open_rate: { 'zh-TW': '開信率', 'en': 'Open Rate', 'ja': '開封率', 'ko': '오픈율' },
+    avg_frequency: { 'zh-TW': '平均頻率', 'en': 'Avg Frequency', 'ja': '平均頻度', 'ko': '평균 빈도' },
+    total_spend: { 'zh-TW': '總花費', 'en': 'Total Spend', 'ja': '総支出', 'ko': '총 지출' },
+    total_revenue: { 'zh-TW': '總營收', 'en': 'Total Revenue', 'ja': '総収益', 'ko': '총 수익' },
+    paid_vs_organic: { 'zh-TW': '付費 vs 自然流量', 'en': 'Paid vs Organic', 'ja': '有料 vs 自然', 'ko': '유료 vs 자연' },
 };
 
 interface LanguageContextType {

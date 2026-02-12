@@ -38,7 +38,7 @@ export const PlatformBreakdown = () => {
 
             {/* 1. ROAS Comparison (Bar Chart) */}
             <div>
-                <h4 className="text-sm text-gray-400 mb-4 uppercase tracking-wider">ROAS Leaderboard</h4>
+                <h4 className="text-sm text-gray-400 mb-4 uppercase tracking-wider">{t('roas_leaderboard')}</h4>
                 <div className="h-[200px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={roasData} layout="vertical" margin={{ left: 40 }}>
@@ -62,7 +62,7 @@ export const PlatformBreakdown = () => {
             <div className="pt-6 border-t border-white/5">
                 <div className="flex justify-between items-center mb-4">
                     <h4 className="text-sm text-gray-400 uppercase tracking-wider">{t('short_video_wars')}</h4>
-                    <span className="text-xs text-blue-400 bg-blue-500/10 px-2 py-1 rounded">Engagement Rate</span>
+                    <span className="text-xs text-blue-400 bg-blue-500/10 px-2 py-1 rounded">{t('engagement_rate')}</span>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -96,7 +96,7 @@ export const PlatformBreakdown = () => {
                         <span className="text-blue-400 font-bold">Meta</span>
                     </div>
                     <p className="text-2xl font-bold text-white">{format(platforms.meta.currentMonth.revenue)}</p>
-                    <p className="text-xs text-gray-400">Total Revenue</p>
+                    <p className="text-xs text-gray-400">{t('total_revenue')}</p>
                 </div>
                 <div className="p-4 bg-red-500/10 rounded-xl border border-red-500/20">
                     <div className="flex items-center gap-2 mb-2">
@@ -104,7 +104,7 @@ export const PlatformBreakdown = () => {
                         <span className="text-red-400 font-bold">Google</span>
                     </div>
                     <p className="text-2xl font-bold text-white">{format(platforms.google.currentMonth.revenue)}</p>
-                    <p className="text-xs text-gray-400">Total Revenue</p>
+                    <p className="text-xs text-gray-400">{t('total_revenue')}</p>
                 </div>
             </div>
         </GlassCard>

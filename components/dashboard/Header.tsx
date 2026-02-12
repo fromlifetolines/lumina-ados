@@ -35,7 +35,7 @@ export const Header = ({ platformFilter = 'all', setPlatformFilter, showPlatform
                         <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400 group-hover:text-blue-400 transition-colors" />
                         <input
                             type="text"
-                            placeholder="Search data..."
+                            placeholder={t('search_placeholder') || "Search data..."}
                             className="bg-black/20 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm text-gray-300 focus:outline-none focus:border-blue-500/50 w-64 transition-all"
                         />
                     </div>
@@ -85,7 +85,7 @@ export const Header = ({ platformFilter = 'all', setPlatformFilter, showPlatform
                                 : "bg-black/20 border-white/5 text-gray-400 hover:bg-white/5"
                         )}
                     >
-                        <span className="font-bold">All Platforms</span>
+                        <span className="font-bold">{t('all_platforms') || "All Platforms"}</span>
                     </button>
                     {(['meta', 'google', 'youtube', 'tiktok', 'twitter', 'linkedin', 'line'] as PlatformId[]).map((p) => (
                         <button
@@ -99,7 +99,7 @@ export const Header = ({ platformFilter = 'all', setPlatformFilter, showPlatform
                             )}
                         >
                             <PlatformIcon platform={p} className={cn("w-5 h-5", platformFilter === p ? "bg-transparent text-blue-400" : "text-gray-500 group-hover:text-gray-300")} />
-                            <span className="capitalize text-sm font-medium">{p}</span>
+                            <span className="capitalize text-sm font-medium">{t(p)}</span>
                         </button>
                     ))}
                 </div>

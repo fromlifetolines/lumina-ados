@@ -18,15 +18,15 @@ export const MainChart = ({ data }: MainChartProps) => {
     if (!data || data.length === 0) {
         return (
             <GlassCard className="h-[400px] flex items-center justify-center">
-                <p className="text-gray-400">No data available for the selected filter.</p>
+                <p className="text-gray-400">{t('no_data')}</p>
             </GlassCard>
         );
     }
 
-    // Format Date for X-Axis (MM/DD)
+    // Format Date for X-Axis (YYYY/MM/DD for Chinese Locale preference)
     const formattedData = data.map(d => ({
         ...d,
-        displayDate: d.date.substring(5).replace('-', '/')
+        displayDate: d.date.replace(/-/g, '/')
     }));
 
     return (
