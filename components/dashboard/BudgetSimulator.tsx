@@ -16,6 +16,9 @@ const INITIAL_CONFIGS: Record<PlatformKey, PlatformConfig> = {
     tiktok: { id: 'tiktok', name: 'TikTok', roas: 2.8, budget: 10000, color: '#000000' },
 };
 
+import { createClient } from '@/lib/supabase';
+import { toast } from 'sonner';
+
 interface BudgetSimulatorProps {
     historicalRevenue?: number;
 }
@@ -31,6 +34,7 @@ export const BudgetSimulator = ({ historicalRevenue = 0 }: BudgetSimulatorProps)
     });
     const [isCalculating, setIsCalculating] = useState(false);
     const [calculatedRoas, setCalculatedRoas] = useState<number | null>(null);
+    const supabase = createClient();
 
     // Calculate real-time projection
     const { totalRevenue, totalBudget, revenueLift } = useMemo(() => {
@@ -60,14 +64,32 @@ export const BudgetSimulator = ({ historicalRevenue = 0 }: BudgetSimulatorProps)
     const handleApplyModel = async () => {
         setIsCalculating(true);
         // Simulate processing delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 800));
 
-        // Logic: Calculate Expected ROAS based on Historical Revenue
-        // Formula: (Historical Revenue + Projected Revenue Lift) / Total New Budget
-        const projectedTotalRevenue = historicalRevenue > 0 ? historicalRevenue + revenueLift : totalRevenue;
+        // Logic: Diminishing Returns Algorithm
+        // Predicted Revenue = Current Revenue * (New Budget / Current Budget) * 0.85 (Market Saturation Factor)
+        const saturationFactor = 0.85;
+        const projectedTotalRevenue = (totalRevenue * (totalBudget / initialTotalBudget)) * saturationFactor;
+
         const roas = projectedTotalRevenue / totalBudget;
 
         setCalculatedRoas(roas);
+
+        // Save Scenario to Supabase
+        const { error } = await supabase.from('budget_scenarios').insert({
+            name: `AI Scenario - ${new Date().toLocaleTimeString()}`,
+            allocations: allocations,
+            projected_revenue: projectedTotalRevenue,
+            projected_roas: roas,
+            total_budget: totalBudget
+        });
+
+        if (!error) {
+            toast.success(`AI Analysis: Budget adjusted. Expected ROAS: ${roas.toFixed(2)}x`);
+        } else {
+            toast.error("Failed to save scenario.");
+        }
+
         setIsCalculating(false);
     };
 
@@ -169,7 +191,7 @@ export const BudgetSimulator = ({ historicalRevenue = 0 }: BudgetSimulatorProps)
                             {calculatedRoas !== null && (
                                 <div className="bg-blue-500/20 rounded-lg p-3 text-sm text-blue-200 border border-blue-500/30 mt-2 animate-in fade-in slide-in-from-top-2">
                                     <div className="flex justify-between items-center">
-                                        <span>Expected ROAS (Data-Driven):</span>
+                                        <span>Expected ROAS (Diminishing Returns):</span>
                                         <span className="font-bold text-white text-lg">{calculatedRoas.toFixed(2)}x</span>
                                     </div>
                                 </div>
