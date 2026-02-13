@@ -54,7 +54,7 @@ export async function middleware(request: NextRequest) {
         // 3. Redirect authenticated users AWAY from login page (but allow if querying for logout?)
         // Actually, simple check: if on /login and user exists -> go to dashboard
         if (request.nextUrl.pathname === '/login' && user) {
-            return NextResponse.redirect(new URL('/dashboard', request.url))
+            return NextResponse.redirect(new URL('/', request.url))
         }
 
         // 4. Root path handling (Optional: redirect / to /dashboard if logged in, or /login if not?)

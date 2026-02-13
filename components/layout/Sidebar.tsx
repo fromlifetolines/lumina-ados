@@ -21,7 +21,7 @@ export const Sidebar = () => {
             setUser(user);
         };
         getUser();
-    }, []);
+    }, [supabase.auth]);
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
