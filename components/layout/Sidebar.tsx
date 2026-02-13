@@ -1,14 +1,33 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { LayoutDashboard, BarChart3, PieChart, Settings, Users, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/lib/i18n';
+import { createClient } from '@/lib/supabase';
 
 export const Sidebar = () => {
     const pathname = usePathname();
+    const router = useRouter();
     const { t } = useTranslation();
+    const [user, setUser] = useState<any>(null);
+    const supabase = createClient();
+
+    useEffect(() => {
+        const getUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+        };
+        getUser();
+    }, []);
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        router.refresh(); // Refresh to trigger middleware redirect
+        router.push('/login');
+    };
 
     const navItems = [
         { name: t('dashboard'), href: '/', icon: LayoutDashboard },
@@ -48,8 +67,18 @@ export const Sidebar = () => {
                 })}
             </nav>
 
-            <div className="p-4 border-t border-white/5">
-                <button className="flex items-center gap-3 px-4 py-3 w-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+            <div className="p-4 border-t border-white/5 space-y-4">
+                {user && (
+                    <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/5">
+                        <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Signed in as</p>
+                        <p className="text-sm font-medium text-white truncate" title={user.email}>{user.email}</p>
+                    </div>
+                )}
+
+                <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 px-4 py-3 w-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all"
+                >
                     <LogOut className="w-5 h-5" />
                     <span className="font-medium">{t('logout')}</span>
                 </button>

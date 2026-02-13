@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
                 return request.cookies.getAll()
             },
             setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-                cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+                cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
             },
         }
 
@@ -31,20 +31,6 @@ export async function GET(request: NextRequest) {
             // Forward to the 'next' path, or default to home/dashboard
             // We use the 'origin' to ensure we stay on the same domain (e.g. Vercel)
             const forwardUrl = new URL(next, origin)
-
-            // Create the response object
-            const response = NextResponse.redirect(forwardUrl)
-
-            // Apply the cookies that were set during code exchange
-            // This is crucial! Using the cookieStore wrapper above just mocks it for the client,
-            // we need to actually write the Set-Cookie header on the response.
-
-            // NOTE: in the newest @supabase/ssr patterns, middleware handles the session refresh,
-            // but for the callback route, simply redirecting after exchangeCodeForSession usually works 
-            // because the client sets the cookies on the *request* context which we don't return directly.
-            // However, we must ensure appropriate cookies are passed.
-
-            // Actually, the simpler pattern for Route Handlers in Next.js App Router with @supabase/ssr is:
 
             return NextResponse.redirect(forwardUrl)
         }
