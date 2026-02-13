@@ -143,6 +143,21 @@ export default function LoginPage() {
                         </button>
                     </form>
 
+                    <div className="mt-4">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                document.cookie = "guest_mode=true; path=/; max-age=3600"; // 1 hour
+                                localStorage.setItem('lumina_guest_mode', 'true');
+                                window.location.href = '/';
+                            }}
+                            className="w-full py-3 px-4 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white font-medium rounded-xl border border-white/10 transition-all text-sm flex items-center justify-center gap-2"
+                        >
+                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            Guest Access (Demo Mode)
+                        </button>
+                    </div>
+
                     <div className="mt-6 text-center text-xs text-gray-500">
                         By signing in, you agree to our <a href="#" className="underline hover:text-white transition-colors">Terms of Service</a> and <a href="#" className="underline hover:text-white transition-colors">Privacy Policy</a>.
                     </div>

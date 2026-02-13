@@ -25,6 +25,12 @@ export const Header = ({ platformFilter = 'all', setPlatformFilter, showPlatform
 
     useEffect(() => {
         const getUserName = async () => {
+            const isGuest = localStorage.getItem('lumina_guest_mode') === 'true';
+            if (isGuest) {
+                setUserName('Guest Admin');
+                return;
+            }
+
             const { data: { user } } = await supabase.auth.getUser();
             if (user && user.email) {
                 setUserName(`Howard | ${user.email}`);
@@ -32,6 +38,43 @@ export const Header = ({ platformFilter = 'all', setPlatformFilter, showPlatform
         };
         getUserName();
     }, [supabase.auth]);
+
+    // Search Logic
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState<{ type: 'customer' | 'campaign', data: any }[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const [showResults, setShowResults] = useState(false);
+
+    useEffect(() => {
+        const delaySearch = setTimeout(async () => {
+            if (searchQuery.length < 2) {
+                setSearchResults([]);
+                return;
+            }
+
+            setIsSearching(true);
+            try {
+                // Parallel search queries
+                const [customers, campaigns] = await Promise.all([
+                    supabase.from('customers').select('*').ilike('name', `%${searchQuery}%`).limit(3),
+                    supabase.from('campaigns').select('*').ilike('name', `%${searchQuery}%`).limit(3)
+                ]);
+
+                const results = [
+                    ...(customers.data || []).map(c => ({ type: 'customer' as const, data: c })),
+                    ...(campaigns.data || []).map(c => ({ type: 'campaign' as const, data: c }))
+                ];
+                setSearchResults(results);
+                setShowResults(true);
+            } catch (error) {
+                console.error("Search failed:", error);
+            } finally {
+                setIsSearching(false);
+            }
+        }, 300);
+
+        return () => clearTimeout(delaySearch);
+    }, [searchQuery, supabase]);
 
     return (
         <div className="flex flex-col gap-6 mb-8">
@@ -44,13 +87,59 @@ export const Header = ({ platformFilter = 'all', setPlatformFilter, showPlatform
                 </div>
 
                 <div className="flex items-center gap-4">
+                    {/* Global Search Bar */}
                     <div className="hidden md:flex relative group">
                         <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400 group-hover:text-blue-400 transition-colors" />
                         <input
                             type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onFocus={() => searchQuery.length >= 2 && setShowResults(true)}
+                            onBlur={() => setTimeout(() => setShowResults(false), 200)}
                             placeholder={t('search_placeholder') || "Search data..."}
                             className="bg-black/20 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm text-gray-300 focus:outline-none focus:border-blue-500/50 w-64 transition-all"
                         />
+
+                        {/* Search Results Dropdown */}
+                        {showResults && (searchResults.length > 0 || isSearching) && (
+                            <div className="absolute top-full mt-2 w-80 bg-[#0f172a] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
+                                {isSearching ? (
+                                    <div className="p-4 text-center text-gray-500 text-sm">Searching...</div>
+                                ) : searchResults.length > 0 ? (
+                                    <ul className="divide-y divide-white/5">
+                                        {searchResults.map((result, idx) => (
+                                            <li
+                                                key={idx}
+                                                className="p-3 hover:bg-white/5 cursor-pointer transition-colors"
+                                                onClick={() => {
+                                                    console.log("Selected:", result);
+                                                    setSearchQuery('');
+                                                }}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className={cn(
+                                                        "p-2 rounded-lg",
+                                                        result.type === 'customer' ? "bg-purple-500/20 text-purple-400" : "bg-blue-500/20 text-blue-400"
+                                                    )}>
+                                                        {result.type === 'customer' ? <User className="w-4 h-4" /> : <PlatformIcon platform={result.data.platform} className="w-4 h-4" />}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-bold text-white">{result.data.name}</p>
+                                                        <p className="text-xs text-gray-400">
+                                                            {result.type === 'customer'
+                                                                ? result.data.email
+                                                                : `${result.data.status} • Budget: $${result.data.budget}`}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <div className="p-4 text-center text-gray-500 text-sm">No results found</div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <DateRangePicker />

@@ -27,6 +27,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 // Clear local storage on logout
                 localStorage.removeItem('lumina_user_profile');
                 localStorage.removeItem('lumina_api_keys');
+                localStorage.removeItem('lumina_guest_mode');
+                document.cookie = "guest_mode=; path=/; max-age=0";
                 router.push('/login');
             } else if (event === 'SIGNED_IN') {
                 router.refresh();

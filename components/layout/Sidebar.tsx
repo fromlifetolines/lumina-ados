@@ -17,6 +17,12 @@ export const Sidebar = () => {
 
     useEffect(() => {
         const getUser = async () => {
+            const isGuest = localStorage.getItem('lumina_guest_mode') === 'true';
+            if (isGuest) {
+                setUser({ email: 'guest@lumina.ai', id: 'guest' });
+                return;
+            }
+
             const { data: { user }, error } = await supabase.auth.getUser();
             if (error || !user) {
                 router.push('/login');

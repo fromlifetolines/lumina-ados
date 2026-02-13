@@ -42,6 +42,12 @@ export async function middleware(request: NextRequest) {
             return response
         }
 
+        // GUEST MODE BYPASS (For Demo/Dev when Rate Limited)
+        const isGuest = request.cookies.get('guest_mode')?.value === 'true';
+        if (isGuest) {
+            return response;
+        }
+
         // Protected routes
         const protectedPaths = ['/dashboard', '/settings', '/analytics', '/campaigns', '/audience', '/subscription', '/report']
         const isProtected = protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path))
