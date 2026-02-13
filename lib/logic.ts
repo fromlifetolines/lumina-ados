@@ -8,17 +8,25 @@ export interface PlatformConfig {
     color: string;
 }
 
-/**
- * Calculates the projected revenue based on budget allocation and ROAS.
- * Includes a "Saturation Factor" where efficiency drops if budget increases significantly.
- */
-export const calculateProjection = (allocations: Record<PlatformKey, number>, baseConfigs: Record<PlatformKey, PlatformConfig>) => {
+export const INITIAL_CONFIGS: Record<PlatformKey, PlatformConfig> = {
+    meta: { id: 'meta', name: 'Meta', roas: 3.5, budget: 15000, color: '#3b82f6' },
+    google: { id: 'google', name: 'Google', roas: 4.2, budget: 12000, color: '#ea4335' },
+    youtube: { id: 'youtube', name: 'YouTube', roas: 1.5, budget: 8000, color: '#ff0000' },
+    tiktok: { id: 'tiktok', name: 'TikTok', roas: 2.8, budget: 10000, color: '#000000' },
+};
+
+export const calculateProjection = (
+    allocations: Record<PlatformKey, number>,
+    baseConfigs: Record<PlatformKey, PlatformConfig>
+) => {
     let totalRevenue = 0;
     let totalBudget = 0;
-    const insights: string[] = [];
+    let initialRevenue = 0;
 
-    // Base total budget to calculate percentage increase
-    const initialTotalBudget = Object.values(baseConfigs).reduce((sum, config) => sum + config.budget, 0);
+    // Calculate initial revenue based on baseConfigs
+    Object.values(baseConfigs).forEach(config => {
+        initialRevenue += config.budget * config.roas;
+    });
 
     Object.entries(allocations).forEach(([key, newBudget]) => {
         const platformKey = key as PlatformKey;
@@ -27,34 +35,21 @@ export const calculateProjection = (allocations: Record<PlatformKey, number>, ba
 
         // Saturation Logic:
         // If budget > 150% of initial, ROAS starts to degrade.
-        // Formula: New ROAS = Base ROAS * (1 - decay_factor)
+        // Factor = 0.78 (Requested by Intelligence Core Specs)
 
         let effectiveRoas = config.roas;
         if (newBudget > initialBudget * 1.5) {
-            const excessRatio = (newBudget - (initialBudget * 1.5)) / initialBudget;
-            // Decay 5% for every 100% increase beyond saturation point
-            const decay = Math.min(excessRatio * 0.05, 0.4); // Max 40% decay
-            effectiveRoas = config.roas * (1 - decay);
+            effectiveRoas = config.roas * 0.78;
         }
 
         const platformRevenue = newBudget * effectiveRoas;
         totalRevenue += platformRevenue;
         totalBudget += newBudget;
-
-        // Generate Insights
-        const revenueDiff = platformRevenue - (initialBudget * config.roas);
-        if (newBudget > initialBudget && revenueDiff > 1000) {
-            // Positive Shift
-            // Note: We return raw numbers/keys here, translation happens in UI
-            // insights.push(`Increasing ${config.name} budget by...`) 
-            // For now, let's just return the raw calculation data for the UI to format
-        }
     });
 
     return {
-        totalRevenue,
-        totalBudget,
-        // Calculate difference from "Base Case" (all budgets at initial)
-        revenueLift: totalRevenue - Object.values(baseConfigs).reduce((sum, c) => sum + (c.budget * c.roas), 0)
+        totalRevenue: Math.round(totalRevenue),
+        totalBudget: Math.round(totalBudget),
+        revenueLift: Math.round(totalRevenue - initialRevenue),
     };
 };

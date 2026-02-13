@@ -1,6 +1,7 @@
 'use client';
 
 import { Bell, Search, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { DateRangePicker } from '@/components/ui/date-range-picker';
 import { useTranslation } from '@/lib/i18n';
 import { useCurrency } from '@/lib/currency';
@@ -8,7 +9,7 @@ import { LanguageSwitcher } from '@/components/ui/language-switcher';
 import { PlatformId } from '@/lib/mockData';
 import { PlatformIcon } from '@/components/ui/platform-icon';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { createClient } from '@/lib/supabase';
 
 interface HeaderProps {
     platformFilter?: PlatformId | 'all';
@@ -19,14 +20,26 @@ interface HeaderProps {
 export const Header = ({ platformFilter = 'all', setPlatformFilter, showPlatformFilter = false }: HeaderProps) => {
     const { t } = useTranslation();
     const { currency, setCurrency } = useCurrency();
+    const [userName, setUserName] = useState<string | null>(null);
+    const supabase = createClient();
+
+    useEffect(() => {
+        const getUserName = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user && user.email) {
+                setUserName(`Howard | ${user.email}`);
+            }
+        };
+        getUserName();
+    }, [supabase.auth]);
 
     return (
         <div className="flex flex-col gap-6 mb-8">
             <header className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/10 backdrop-blur-md sticky top-4 z-40">
                 <div className="flex items-center gap-6">
                     <div>
-                        <h2 className="text-xl font-bold text-white tracking-wide">{t('welcome_back')}, Admin</h2>
-                        <p className="text-sm text-gray-400">{t('dashboard')}</p>
+                        <h2 className="text-xl font-bold text-white tracking-wide">Lumina AdOS {userName ? `| ${userName}` : ''}</h2>
+                        <p className="text-sm text-gray-400">Chief Marketing Consultant</p>
                     </div>
                 </div>
 
@@ -60,7 +73,10 @@ export const Header = ({ platformFilter = 'all', setPlatformFilter, showPlatform
 
                     <LanguageSwitcher />
 
-                    <button className="relative p-2 rounded-xl hover:bg-white/10 transition-colors text-gray-400 hover:text-white">
+                    <button
+                        aria-label="Notifications"
+                        className="relative p-2 rounded-xl hover:bg-white/10 transition-colors text-gray-400 hover:text-white"
+                    >
                         <Bell className="w-5 h-5" />
                         <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
                     </button>

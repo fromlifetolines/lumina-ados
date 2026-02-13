@@ -5,7 +5,8 @@ import { Header } from '@/components/dashboard/Header';
 import { useTranslation } from '@/lib/i18n';
 import { PlatformIcon } from '@/components/ui/platform-icon';
 import { PlatformId, platforms } from '@/lib/mockData';
-import { useState } from 'react';
+import { createClient } from '@/lib/supabase';
+import { useState, useEffect } from 'react';
 import { User, Key, Bell, Check, Loader2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -14,18 +15,49 @@ export default function SettingsPage() {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState('api');
     const [connections, setConnections] = useState<Record<string, boolean>>({
-        meta: true, // Simulate existing connection
+        meta: false,
         google: false
     });
     const [loading, setLoading] = useState<string | null>(null);
+    const supabase = createClient();
 
-    const handleConnect = (pid: string) => {
+    // Load initial connections
+    useEffect(() => {
+        const fetchConnections = async () => {
+            const { data } = await supabase.from('api_integrations').select('*');
+            if (data) {
+                const statusMap: Record<string, boolean> = {};
+                data.forEach((integration: any) => {
+                    if (integration.status === 'active') {
+                        statusMap[integration.platform] = true;
+                    }
+                });
+                setConnections(prev => ({ ...prev, ...statusMap }));
+            }
+        };
+        fetchConnections();
+    }, []);
+
+    const handleConnect = async (pid: string, key?: string) => {
+        if (!key) {
+            // Strict Truth: No key, no connection.
+            // visual feedback would be handled by UI validation, but here we block the operation.
+            return;
+        }
         setLoading(pid);
-        // Simulate OAuth delay
-        setTimeout(() => {
-            setConnections(prev => ({ ...prev, [pid]: !prev[pid] }));
-            setLoading(null);
-        }, 1500);
+
+        // Upsert to Supabase
+        const { error } = await supabase.from('api_integrations').upsert({
+            platform: pid,
+            status: 'active',
+            api_key: key,
+            connected_at: new Date().toISOString()
+        }, { onConflict: 'platform' });
+
+        if (!error) {
+            setConnections(prev => ({ ...prev, [pid]: true }));
+        }
+        setLoading(null);
     };
 
     const tabs = [
@@ -79,15 +111,34 @@ export default function SettingsPage() {
                                                         <p className="font-bold text-white capitalize">{platforms[pid].name}</p>
                                                         <p className="text-xs text-gray-500">
                                                             {connections[pid]
-                                                                ? 'Syncing daily • Last sync: 2m ago'
+                                                                ? 'Syncing daily • Last sync: Just now'
                                                                 : 'Not connected'}
                                                         </p>
                                                     </div>
                                                 </div>
+                                            </div>
 
+                                            <div className="flex gap-4 items-center">
+                                                <div className="flex-1 relative">
+                                                    <Key className="absolute left-3 top-2.5 w-4 h-4 text-gray-500" />
+                                                    <input
+                                                        type="password"
+                                                        placeholder="Enter API Key / Access Token"
+                                                        disabled={connections[pid]}
+                                                        className={cn(
+                                                            "w-full bg-black/20 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none transition-all",
+                                                            connections[pid] ? "text-green-400 border-green-500/30 cursor-not-allowed opacity-75" : "text-white focus:border-blue-500"
+                                                        )}
+                                                        defaultValue={connections[pid] ? "sk_live_********************" : ""}
+                                                        id={`input_${pid}`}
+                                                    />
+                                                </div>
                                                 <button
-                                                    onClick={() => handleConnect(pid)}
-                                                    disabled={loading === pid}
+                                                    onClick={() => {
+                                                        const input = document.getElementById(`input_${pid}`) as HTMLInputElement;
+                                                        handleConnect(pid, input.value);
+                                                    }}
+                                                    disabled={loading === pid || connections[pid]}
                                                     className={cn(
                                                         "px-4 py-2 rounded-lg text-sm font-medium transition-all min-w-[120px]",
                                                         connections[pid]
@@ -109,7 +160,7 @@ export default function SettingsPage() {
 
                                             {/* Education Guide for Meta & Google */}
                                             {!connections[pid] && (pid === 'meta' || pid === 'google') && (
-                                                <div className="mt-2 p-3 bg-black/30 rounded-lg text-xs text-gray-400">
+                                                <div className="mt-4 p-3 bg-black/30 rounded-lg text-xs text-gray-400">
                                                     <div className="flex items-center gap-2 mb-2">
                                                         <Key className="w-3 h-3 text-blue-400" />
                                                         <span className="font-bold text-blue-300">{t('how_to_find')}</span>

@@ -21,9 +21,11 @@ import { toast } from 'sonner';
 
 interface BudgetSimulatorProps {
     historicalRevenue?: number;
+    currentLtv?: number;
+    currentCac?: number;
 }
 
-export const BudgetSimulator = ({ historicalRevenue = 0 }: BudgetSimulatorProps) => {
+export const BudgetSimulator = ({ historicalRevenue = 0, currentLtv = 120, currentCac = 40 }: BudgetSimulatorProps) => {
     const { t } = useTranslation();
     const { format } = useCurrency();
     const [allocations, setAllocations] = useState<Record<PlatformKey, number>>({
@@ -66,11 +68,26 @@ export const BudgetSimulator = ({ historicalRevenue = 0 }: BudgetSimulatorProps)
         // Simulate processing delay
         await new Promise(resolve => setTimeout(resolve, 800));
 
-        // Logic: Diminishing Returns Algorithm
-        // Predicted Revenue = Current Revenue * (New Budget / Current Budget) * 0.85 (Market Saturation Factor)
-        const saturationFactor = 0.85;
-        const projectedTotalRevenue = (totalRevenue * (totalBudget / initialTotalBudget)) * saturationFactor;
+        // Logic: Diminishing Returns Algorithm linked to Real LTV/CAC
+        // Formula: Projected Revenue = (New Budget / Current CAC) * (Current LTV * Saturation)
+        // Saturation starts at 1.0 and decays as budget scales beyond 1.5x
 
+        const budgetScale = totalBudget / initialTotalBudget;
+        let saturationFactor = 1.0;
+
+        if (budgetScale > 1.5) {
+            saturationFactor = 0.78; // User requested 0.78 factor for aggressive scaling
+        } else if (budgetScale > 1.2) {
+            saturationFactor = 0.9;
+        }
+
+        // Est. New Customers = Budget / CAC
+        const estNewCustomers = totalBudget / currentCac;
+
+        // Est. Revenue = Customers * LTV * Saturation
+        const projectedTotalRevenue = estNewCustomers * currentLtv * saturationFactor;
+
+        // Recalculate ROAS
         const roas = projectedTotalRevenue / totalBudget;
 
         setCalculatedRoas(roas);
@@ -115,6 +132,42 @@ export const BudgetSimulator = ({ historicalRevenue = 0 }: BudgetSimulatorProps)
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Sliders Section */}
                 <div className="space-y-6">
+                    <div className="flex gap-2 mb-4">
+                        <button
+                            onClick={() => {
+                                const newAlloc = { ...allocations };
+                                (Object.keys(newAlloc) as PlatformKey[]).forEach(k => newAlloc[k] = INITIAL_CONFIGS[k].budget * 0.9);
+                                setAllocations(newAlloc);
+                                toast.info("已應用：節流模式 (Conservative) - 降低預算，專注高 ROI");
+                            }}
+                            className="px-3 py-1.5 rounded-lg bg-green-500/10 text-green-400 text-xs font-bold border border-green-500/20 hover:bg-green-500/20 transition-all"
+                        >
+                            節流模式
+                        </button>
+                        <button
+                            onClick={() => {
+                                const newAlloc = { ...allocations };
+                                (Object.keys(newAlloc) as PlatformKey[]).forEach(k => newAlloc[k] = INITIAL_CONFIGS[k].budget * 1.2);
+                                setAllocations(newAlloc);
+                                toast.info("已應用：平衡模式 (Balanced) - 穩健增長");
+                            }}
+                            className="px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 text-xs font-bold border border-blue-500/20 hover:bg-blue-500/20 transition-all"
+                        >
+                            平衡模式
+                        </button>
+                        <button
+                            onClick={() => {
+                                const newAlloc = { ...allocations };
+                                (Object.keys(newAlloc) as PlatformKey[]).forEach(k => newAlloc[k] = INITIAL_CONFIGS[k].budget * 1.6); // > 1.5 triggers diminishing returns
+                                setAllocations(newAlloc);
+                                toast.warning("已應用：進取模式 (Aggressive) - 最大化營收，ROI 略降");
+                            }}
+                            className="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 text-xs font-bold border border-red-500/20 hover:bg-red-500/20 transition-all"
+                        >
+                            進取模式
+                        </button>
+                    </div>
+
                     {(Object.keys(INITIAL_CONFIGS) as PlatformKey[]).map((key) => {
                         const config = INITIAL_CONFIGS[key];
                         return (
@@ -219,7 +272,7 @@ export const BudgetSimulator = ({ historicalRevenue = 0 }: BudgetSimulatorProps)
                         {isCalculating ? (
                             <span className="flex items-center gap-2">
                                 <RefreshCw className="w-5 h-5 animate-spin" />
-                                Processing AI Model...
+                                數據運算中...
                             </span>
                         ) : (
                             <>

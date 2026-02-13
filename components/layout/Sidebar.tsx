@@ -17,15 +17,19 @@ export const Sidebar = () => {
 
     useEffect(() => {
         const getUser = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            setUser(user);
+            const { data: { user }, error } = await supabase.auth.getUser();
+            if (error || !user) {
+                router.push('/login');
+            } else {
+                setUser(user);
+            }
         };
         getUser();
-    }, [supabase.auth]);
+    }, [supabase.auth, router]);
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        router.refresh(); // Refresh to trigger middleware redirect
+        router.refresh();
         router.push('/login');
     };
 
@@ -40,13 +44,10 @@ export const Sidebar = () => {
 
     return (
         <aside className="fixed left-0 top-0 h-screen w-64 glass border-r border-white/10 flex flex-col z-50">
-            <div className="p-8">
-                <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 tracking-wider">
-                    Lumina AdOS
-                </h1>
-            </div>
+            {/* ... header ... */}
 
             <nav className="flex-1 px-4 space-y-2">
+                {/* ... nav items ... */}
                 {navItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
@@ -71,7 +72,7 @@ export const Sidebar = () => {
                 {user && (
                     <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/5">
                         <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Signed in as</p>
-                        <p className="text-sm font-medium text-white truncate" title={user.email}>{user.email}</p>
+                        <p className="text-sm font-medium text-white truncate" title={user.email}>Howard | {user.email}</p>
                     </div>
                 )}
 

@@ -38,29 +38,33 @@ interface MetricsGridProps {
     roas: number;
     traffic: number;
     formatCurrency: (amount: number) => string;
+    growthRates?: {
+        revenue: number;
+        users: number;
+    };
 }
 
-export const MetricsGrid = ({ spend, revenue, roas, traffic, formatCurrency }: MetricsGridProps) => {
+export const MetricsGrid = ({ spend, revenue, roas, traffic, formatCurrency, growthRates }: MetricsGridProps) => {
     const { t } = useTranslation();
 
     const metrics = [
         {
             title: t('total_spend'),
             value: formatCurrency(spend),
-            change: "+12.5%",
+            change: "N/A", // No daily spend data yet
             isPositive: true,
             icon: DollarSign,
-            color: "#ef4444", // Red
-            sparkData: generateSparkData()
+            color: "#ef4444",
+            sparkData: []
         },
         {
             title: t('total_revenue'),
             value: formatCurrency(revenue),
-            change: "+8.2%",
-            isPositive: true,
+            change: growthRates ? `${growthRates.revenue > 0 ? '+' : ''}${growthRates.revenue.toFixed(1)}%` : "0%",
+            isPositive: (growthRates?.revenue || 0) >= 0,
             icon: Activity,
-            color: "#10b981", // Green
-            sparkData: generateSparkData()
+            color: "#10b981",
+            sparkData: []
         },
         {
             title: t('roas'),
@@ -115,7 +119,7 @@ export const MetricsGrid = ({ spend, revenue, roas, traffic, formatCurrency }: M
                     <div className="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden">
                         <div
                             className="h-full rounded-full transition-all duration-1000"
-                            style={{ width: `${60 + Math.random() * 30}%`, backgroundColor: metric.color }}
+                            style={{ width: `75%`, backgroundColor: metric.color }}
                         ></div>
                     </div>
                 </GlassCard>

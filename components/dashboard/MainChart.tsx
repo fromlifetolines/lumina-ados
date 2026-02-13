@@ -4,10 +4,15 @@ import { GlassCard } from '@/components/ui/glass-card';
 import { useTranslation } from '@/lib/i18n';
 import { useCurrency } from '@/lib/currency';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { DailyMetric } from '@/lib/mockData';
+interface ChartMetric {
+    date: string;
+    revenue: number;
+    spend: number;
+    displayDate?: string;
+}
 
 interface MainChartProps {
-    data: DailyMetric[];
+    data: ChartMetric[];
 }
 
 export const MainChart = ({ data }: MainChartProps) => {
