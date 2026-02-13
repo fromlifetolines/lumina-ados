@@ -16,7 +16,11 @@ const INITIAL_CONFIGS: Record<PlatformKey, PlatformConfig> = {
     tiktok: { id: 'tiktok', name: 'TikTok', roas: 2.8, budget: 10000, color: '#000000' },
 };
 
-export const BudgetSimulator = () => {
+interface BudgetSimulatorProps {
+    historicalRevenue?: number;
+}
+
+export const BudgetSimulator = ({ historicalRevenue = 0 }: BudgetSimulatorProps) => {
     const { t } = useTranslation();
     const { format } = useCurrency();
     const [allocations, setAllocations] = useState<Record<PlatformKey, number>>({
@@ -26,6 +30,7 @@ export const BudgetSimulator = () => {
         tiktok: 10000,
     });
     const [isCalculating, setIsCalculating] = useState(false);
+    const [calculatedRoas, setCalculatedRoas] = useState<number | null>(null);
 
     // Calculate real-time projection
     const { totalRevenue, totalBudget, revenueLift } = useMemo(() => {
@@ -49,6 +54,21 @@ export const BudgetSimulator = () => {
             youtube: INITIAL_CONFIGS.youtube.budget,
             tiktok: INITIAL_CONFIGS.tiktok.budget,
         });
+        setCalculatedRoas(null);
+    };
+
+    const handleApplyModel = async () => {
+        setIsCalculating(true);
+        // Simulate processing delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // Logic: Calculate Expected ROAS based on Historical Revenue
+        // Formula: (Historical Revenue + Projected Revenue Lift) / Total New Budget
+        const projectedTotalRevenue = historicalRevenue > 0 ? historicalRevenue + revenueLift : totalRevenue;
+        const roas = projectedTotalRevenue / totalBudget;
+
+        setCalculatedRoas(roas);
+        setIsCalculating(false);
     };
 
     return (
@@ -146,6 +166,15 @@ export const BudgetSimulator = () => {
                                 )}
                             </div>
 
+                            {calculatedRoas !== null && (
+                                <div className="bg-blue-500/20 rounded-lg p-3 text-sm text-blue-200 border border-blue-500/30 mt-2 animate-in fade-in slide-in-from-top-2">
+                                    <div className="flex justify-between items-center">
+                                        <span>Expected ROAS (Data-Driven):</span>
+                                        <span className="font-bold text-white text-lg">{calculatedRoas.toFixed(2)}x</span>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="bg-black/30 rounded-lg p-3 text-sm text-gray-300 border border-white/5 mt-2">
                                 <div className="flex justify-between items-center">
                                     <span>{t('confidence_score')}:</span>
@@ -160,9 +189,22 @@ export const BudgetSimulator = () => {
                         </div>
                     </div>
 
-                    <button className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 group">
-                        {t('apply_forecast')}
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <button
+                        onClick={handleApplyModel}
+                        disabled={isCalculating}
+                        className="w-full py-4 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:text-gray-400 text-white font-bold rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 group"
+                    >
+                        {isCalculating ? (
+                            <span className="flex items-center gap-2">
+                                <RefreshCw className="w-5 h-5 animate-spin" />
+                                Processing AI Model...
+                            </span>
+                        ) : (
+                            <>
+                                {t('apply_forecast')}
+                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            </>
+                        )}
                     </button>
                 </div>
             </div>
