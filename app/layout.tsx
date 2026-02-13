@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { Sidebar } from '@/components/layout/Sidebar';
+import { AppLayout } from '@/components/layout/AppLayout';
 import { LanguageProvider } from '@/lib/i18n';
 import { AuthProvider } from '@/components/AuthProvider';
 
@@ -22,12 +22,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <LanguageProvider>
           <AuthProvider>
-            <div className="flex min-h-screen">
-              <Sidebar />
-              <main className="flex-1 ml-64 p-8 relative z-10">
-                {children}
-              </main>
-            </div>
+            <AppLayout>
+              {children}
+            </AppLayout>
           </AuthProvider>
         </LanguageProvider>
       </body>
