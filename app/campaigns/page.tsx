@@ -6,19 +6,6 @@ import { useCurrency } from '@/lib/currency';
 import { PlatformIcon } from '@/components/ui/platform-icon';
 import { Header } from '@/components/dashboard/Header';
 import { PlatformId } from '@/lib/mockData';
-import { AlertTriangle, TrendingUp, Zap, PauseCircle, Search } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
-'use client';
-
-import { GlassCard } from '@/components/ui/glass-card';
-import { useTranslation } from '@/lib/i18n';
-import { useCurrency } from '@/lib/currency';
-import { PlatformIcon } from '@/components/ui/platform-icon';
-import { Header } from '@/components/dashboard/Header';
-import { PlatformId } from '@/lib/mockData';
 import { AlertTriangle, TrendingUp, Zap, PauseCircle, Search, Database, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';

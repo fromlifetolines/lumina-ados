@@ -168,6 +168,7 @@ const translations: Translations = {
     },
     budget_allocator: { 'zh-TW': '預算分配模擬器', 'en': 'Budget Allocator', 'ja': '予算配分シミュレーター', 'ko': '예산 할당 시뮬레이터' },
     projected_revenue: { 'zh-TW': '預估營收增長', 'en': 'Projected Revenue', 'ja': '予想収益成長', 'ko': '예상 수익 증가' },
+    projected_revenue_sim: { 'zh-TW': '模擬預估營收', 'en': 'Simulated Revenue', 'ja': 'シミュレーション収益', 'ko': '시뮬레이션 수익' },
     confidence_score: { 'zh-TW': 'AI 預測信心指數', 'en': 'AI Confidence Score', 'ja': 'AI予測信頼度', 'ko': 'AI 예측 신뢰도' },
     total_budget: { 'zh-TW': '總預算', 'en': 'Total Budget', 'ja': '総予算', 'ko': '총 예산' },
     current_allocation: { 'zh-TW': '目前分配', 'en': 'Current Allocation', 'ja': '現在の配分', 'ko': '현재 할당' },

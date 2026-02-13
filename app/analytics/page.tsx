@@ -9,7 +9,7 @@ import {
     ResponsiveContainer, Tooltip, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend
 } from 'recharts';
 import { createClient } from '@/lib/supabase';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useCurrency } from '@/lib/currency';
 
 const radarData = [
@@ -35,13 +35,6 @@ export default function AnalyticsPage() {
     const { t } = useTranslation();
     const { format } = useCurrency();
     const [customers, setCustomers] = useState<Customer[]>([]);
-    const [sourceFilter, setSourceFilter] = useState('All'); // Added sourceFilter state
-    // Filter Data based on Source
-    // This logic is already correct, but we need to ensure the source filter component is working
-    const filteredCustomers = useMemo(() => {
-        if (sourceFilter === 'All') return customers;
-        return customers.filter(c => c.source === sourceFilter);
-    }, [customers, sourceFilter]);
     const [stats, setStats] = useState({
         totalRevenue: 0,
         aov: 0,
@@ -141,100 +134,102 @@ export default function AnalyticsPage() {
                                     </RadarChart>
                                 </ResponsiveContainer>
                             </div>
-                        </GlassCard>
-
-                        {/* Budget Simulator (Takes 2 columns) */}
-                        <div className="col-span-1 lg:col-span-2">
-                            <BudgetSimulator
-                                historicalRevenue={stats.totalRevenue}
-                                currentLtv={stats.aov} // AOV is decent proxy for LTV if retention is 1. For now use AOV.
-                                currentCac={stats.totalRevenue > 0 && stats.ltvCac > 0 ? stats.aov / stats.ltvCac : 50}
-                            />
                         </div>
-
                     </div>
+                </GlassCard>
 
-                    {/* SEO Performance Section */}
-                    <GlassCard className="p-6 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-4 opacity-5">
-                            <TrendingUp className="w-32 h-32 text-white" />
-                        </div>
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="p-2 bg-purple-500/20 rounded-lg">
-                                <TrendingUp className="w-5 h-5 text-purple-400" />
-                            </div>
-                            <h3 className="text-xl font-bold text-white">SEO Performance (Organic)</h3>
-                        </div>
+                {/* Budget Simulator (Takes 2 columns) */}
+                <div className="col-span-1 lg:col-span-2">
+                    <BudgetSimulator
+                        historicalRevenue={stats.totalRevenue}
+                        currentLtv={stats.aov} // AOV is decent proxy for LTV if retention is 1. For now use AOV.
+                        currentCac={stats.totalRevenue > 0 && stats.ltvCac > 0 ? stats.aov / stats.ltvCac : 50}
+                    />
+                </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                            <div className="space-y-1">
-                                <p className="text-sm text-gray-400">Avg. Position</p>
-                                <p className="text-2xl font-bold text-white">3.2 <span className="text-xs text-green-400 ml-1">▲ 0.4</span></p>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-sm text-gray-400">Organic Traffic</p>
-                                <p className="text-2xl font-bold text-white">12.5k <span className="text-xs text-green-400 ml-1">▲ 15%</span></p>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-sm text-gray-400">Organic CTR</p>
-                                <p className="text-2xl font-bold text-white">4.8% <span className="text-xs text-gray-500 ml-1">-</span></p>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-sm text-gray-400">High-Intent Keywords</p>
-                                <p className="text-2xl font-bold text-white">84 <span className="text-xs text-green-400 ml-1">+12</span></p>
-                            </div>
-                        </div>
-                    </GlassCard>
-
-                    {/* CRM Data Table */}
-                    <GlassCard className="overflow-hidden">
-                        <div className="p-6 border-b border-white/10">
-                            <h3 className="text-xl font-bold text-white">CRM Details</h3>
-                        </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead>
-                                    <tr className="bg-white/5 text-gray-400 text-sm uppercase">
-                                        <th className="p-4">Customer</th>
-                                        <th className="p-4">Status</th>
-                                        <th className="p-4">Total Spent</th>
-                                        <th className="p-4">Last Purchase</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-white/10">
-                                    {customers.map((customer) => (
-                                        <tr key={customer.id} className="hover:bg-white/5 transition-colors text-sm text-gray-300">
-                                            <td className="p-4">
-                                                <div className="font-medium text-white">{customer.name}</div>
-                                                <div className="text-xs text-gray-500">{customer.email}</div>
-                                            </td>
-                                            <td className="p-4">
-                                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${customer.status === 'Whale' ? 'bg-purple-500/20 text-purple-300' :
-                                                    customer.status === 'At Risk' ? 'bg-red-500/20 text-red-300' :
-                                                        'bg-blue-500/20 text-blue-300'
-                                                    }`}>
-                                                    {customer.status}
-                                                </span>
-                                            </td>
-                                            <td className="p-4 font-mono text-white">
-                                                {format(customer.total_spent)}
-                                            </td>
-                                            <td className="p-4 text-gray-400">
-                                                {new Date(customer.last_purchase).toLocaleDateString()}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {customers.length === 0 && (
-                                        <tr>
-                                            <td colSpan={4} className="p-8 text-center text-gray-500">
-                                                Loading CRM data...
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </GlassCard>
             </div>
-            );
+
+            {/* SEO Performance Section */}
+            <GlassCard className="p-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-5">
+                    <TrendingUp className="w-32 h-32 text-white" />
+                </div>
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-purple-500/20 rounded-lg">
+                        <TrendingUp className="w-5 h-5 text-purple-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white">SEO Performance (Organic)</h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="space-y-1">
+                        <p className="text-sm text-gray-400">Avg. Position</p>
+                        <p className="text-2xl font-bold text-white">3.2 <span className="text-xs text-green-400 ml-1">▲ 0.4</span></p>
+                    </div>
+                    <div className="space-y-1">
+                        <p className="text-sm text-gray-400">Organic Traffic</p>
+                        <p className="text-2xl font-bold text-white">12.5k <span className="text-xs text-green-400 ml-1">▲ 15%</span></p>
+                    </div>
+                    <div className="space-y-1">
+                        <p className="text-sm text-gray-400">Organic CTR</p>
+                        <p className="text-2xl font-bold text-white">4.8% <span className="text-xs text-gray-500 ml-1">-</span></p>
+                    </div>
+                    <div className="space-y-1">
+                        <p className="text-sm text-gray-400">High-Intent Keywords</p>
+                        <p className="text-2xl font-bold text-white">84 <span className="text-xs text-green-400 ml-1">+12</span></p>
+                    </div>
+                </div>
+            </GlassCard>
+
+            {/* CRM Data Table */}
+            <GlassCard className="overflow-hidden">
+                <div className="p-6 border-b border-white/10">
+                    <h3 className="text-xl font-bold text-white">CRM Details</h3>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead>
+                            <tr className="bg-white/5 text-gray-400 text-sm uppercase">
+                                <th className="p-4">Customer</th>
+                                <th className="p-4">Status</th>
+                                <th className="p-4">Total Spent</th>
+                                <th className="p-4">Last Purchase</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/10">
+                            {customers.map((customer) => (
+                                <tr key={customer.id} className="hover:bg-white/5 transition-colors text-sm text-gray-300">
+                                    <td className="p-4">
+                                        <div className="font-medium text-white">{customer.name}</div>
+                                        <div className="text-xs text-gray-500">{customer.email}</div>
+                                    </td>
+                                    <td className="p-4">
+                                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${customer.status === 'Whale' ? 'bg-purple-500/20 text-purple-300' :
+                                            customer.status === 'At Risk' ? 'bg-red-500/20 text-red-300' :
+                                                'bg-blue-500/20 text-blue-300'
+                                            }`}>
+                                            {customer.status}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 font-mono text-white">
+                                        {format(customer.total_spent)}
+                                    </td>
+                                    <td className="p-4 text-gray-400">
+                                        {new Date(customer.last_purchase).toLocaleDateString()}
+                                    </td>
+                                </tr>
+                            ))}
+                            {customers.length === 0 && (
+                                <tr>
+                                    <td colSpan={4} className="p-8 text-center text-gray-500">
+                                        Loading CRM data...
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </GlassCard>
+        </div>
+    );
 }
